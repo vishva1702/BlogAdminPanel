@@ -1,0 +1,19 @@
+﻿@model BlogAdminPanel.Models.User
+
+<form method="post" asp-action="AssignRole">
+    <div class="form-group">
+        <label asp-for="Role" class="control-label">Role</label>
+        <div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" asp-for="Role" value="Admin" id="RoleAdmin" />
+                <label class="form-check-label" for="RoleAdmin">Admin</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" asp-for="Role" value="Editor" id="RoleEditor" />
+                <label class="form-check-label" for="RoleEditor">Editor</label>
+            </div>
+        </div>
+        <span asp-validation-for="Role" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Assign Role</button>
+</form>

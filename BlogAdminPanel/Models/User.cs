@@ -1,4 +1,6 @@
-﻿namespace BlogAdminPanel.Models
+﻿using BlogAdminPanel.Validation;
+
+namespace BlogAdminPanel.Models
 {
     public class User
     {
@@ -12,8 +14,8 @@
         // Audit Columns
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public string CreatedBy { get; set; }
-        public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public DateTime? UpdatedOn { get; set; } 
+        public string? UpdatedBy { get; set; }
         public bool IsDeleted { get; set; } = false;
 
     }
