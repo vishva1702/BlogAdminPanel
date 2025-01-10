@@ -1,0 +1,36 @@
+﻿@model IEnumerable<BlogAdminPanel.Models.Category>  
+@{
+    ViewData["Title"] = "Categories - Index";
+}
+
+<h1>Categories</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<!-- Categories Usage Statistics Section -->
+<h3>Usage Statistics</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Category Name</th>
+            <th>Number of Blog Posts</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var blogPostCount = item.BlogPosts?.Count ?? 0; 
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@blogPostCount</td> <!-- Displaying the count -->
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

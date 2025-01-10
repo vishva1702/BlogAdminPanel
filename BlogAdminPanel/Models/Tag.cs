@@ -1,4 +1,6 @@
-﻿namespace BlogAdminPanel.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BlogAdminPanel.Models
 {
     public class Tag
     {
@@ -7,7 +9,9 @@
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public string CreatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public ICollection<BlogPost> BlogPosts { get; set; } = new List<BlogPost>();
+
     }
 }
