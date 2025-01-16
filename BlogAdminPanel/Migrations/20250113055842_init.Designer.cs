@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogAdminPanel.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250107113016_Init")]
-    partial class Init
+    [Migration("20250113055842_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -168,6 +168,69 @@ namespace BlogAdminPanel.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("BlogAdminPanel.Models.DTOs.UserCreateDto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserCreateDto");
+                });
+
+            modelBuilder.Entity("BlogAdminPanel.Models.DTOs.UserUpdateDto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserUpdateDto");
+                });
+
             modelBuilder.Entity("BlogAdminPanel.Models.Tag", b =>
                 {
                     b.Property<int>("Id")
@@ -247,18 +310,18 @@ namespace BlogAdminPanel.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            CreatedOn = new DateTime(2025, 1, 7, 17, 0, 15, 375, DateTimeKind.Local).AddTicks(3521),
+                            CreatedOn = new DateTime(2025, 1, 13, 11, 28, 41, 665, DateTimeKind.Local).AddTicks(4005),
                             Email = "admin@blog.com",
                             IsActive = true,
                             IsDeleted = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEHk4wEZWyRjEum5mXhBAJ0aD2xfR27hYTHeMr6ZslumEYFKqlLJ4mxU4dYwxttn/XQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI1M42PEPZL4v+m2vSUR1gmMk+e0ln5uUQIBYo50qE2jAyKY1rzjiWDhS4HR4/lIIw==",
                             Role = "Admin",
                             UserName = "Admin"
                         });

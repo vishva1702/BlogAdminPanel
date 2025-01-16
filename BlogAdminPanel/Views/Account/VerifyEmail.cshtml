@@ -1,0 +1,22 @@
+﻿@model BlogAdminPanel.ViewModels.VerifyEmailViewModel
+
+<h2>Forgot Password</h2>
+@using (Html.BeginForm("SendOTP", "Account", FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Email, new { @class = "control-label" })
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter your email" })
+        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+    </div>
+    <button type="submit" class="btn btn-primary">Send OTP</button>
+}
+
+@if (ViewData.ModelState.ErrorCount > 0)
+{
+    <div class="alert alert-danger mt-3">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}

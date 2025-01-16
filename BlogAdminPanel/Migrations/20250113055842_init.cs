@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BlogAdminPanel.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -73,6 +73,23 @@ namespace BlogAdminPanel.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserCreateDto",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserCreateDto", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -92,6 +109,23 @@ namespace BlogAdminPanel.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserUpdateDto",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserUpdateDto", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -125,7 +159,7 @@ namespace BlogAdminPanel.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "Email", "IsActive", "IsDeleted", "PasswordHash", "Role", "UpdatedBy", "UpdatedOn", "UserName" },
-                values: new object[] { 1, "System", new DateTime(2025, 1, 7, 17, 0, 15, 375, DateTimeKind.Local).AddTicks(3521), "admin@blog.com", true, false, "AQAAAAIAAYagAAAAEHk4wEZWyRjEum5mXhBAJ0aD2xfR27hYTHeMr6ZslumEYFKqlLJ4mxU4dYwxttn/XQ==", "Admin", null, null, "Admin" });
+                values: new object[] { 1, "System", new DateTime(2025, 1, 13, 11, 28, 41, 665, DateTimeKind.Local).AddTicks(4005), "admin@blog.com", true, false, "AQAAAAIAAYagAAAAEI1M42PEPZL4v+m2vSUR1gmMk+e0ln5uUQIBYo50qE2jAyKY1rzjiWDhS4HR4/lIIw==", "Admin", null, null, "Admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_BlogPostId",
@@ -146,7 +180,13 @@ namespace BlogAdminPanel.Migrations
                 name: "Tags");
 
             migrationBuilder.DropTable(
+                name: "UserCreateDto");
+
+            migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "UserUpdateDto");
 
             migrationBuilder.DropTable(
                 name: "BlogPosts");

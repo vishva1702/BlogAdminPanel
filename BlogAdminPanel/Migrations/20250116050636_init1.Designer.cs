@@ -4,6 +4,7 @@ using BlogAdminPanel.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogAdminPanel.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250116050636_init1")]
+    partial class init1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,34 +231,6 @@ namespace BlogAdminPanel.Migrations
                     b.ToTable("UserUpdateDto");
                 });
 
-            modelBuilder.Entity("BlogAdminPanel.Models.LoginHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("IPAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LoginDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserAgent")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LoginHistories");
-                });
-
             modelBuilder.Entity("BlogAdminPanel.Models.Tag", b =>
                 {
                     b.Property<int>("Id")
@@ -342,11 +317,11 @@ namespace BlogAdminPanel.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            CreatedOn = new DateTime(2025, 1, 16, 12, 14, 36, 15, DateTimeKind.Local).AddTicks(44),
+                            CreatedOn = new DateTime(2025, 1, 16, 10, 36, 35, 510, DateTimeKind.Local).AddTicks(126),
                             Email = "admin@blog.com",
                             IsActive = true,
                             IsDeleted = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEKZXWZDS1A7BTk7QRo8DCFbpxAWudoP5amECLEnKsetfAEbzFCRYY7iMtZFhZTFiYg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAB4e8gaacES4TpYSS1lN3iaFtJb4qrjbROgSRaTesR1F7MaWbOe+nVA3ZykRM0mAQ==",
                             Role = "Admin",
                             UserName = "Admin"
                         });

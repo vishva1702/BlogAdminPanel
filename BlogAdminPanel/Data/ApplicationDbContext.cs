@@ -19,16 +19,18 @@ namespace BlogAdminPanel.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<User> Users { get; set; }
 
+        public DbSet<LoginHistory> LoginHistories { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
+            modelBuilder.Entity<User>().ToTable("Users");
 
             // Seed Admin User
             var adminUser = new User
             {
-                Id = 1,
+                Id=1,
                 UserName = "Admin",
                 Email = "admin@blog.com",
                 PasswordHash = new PasswordHasher<User>().HashPassword(null, "Admin@123"), // Replace with a strong password

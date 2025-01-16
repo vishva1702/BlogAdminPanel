@@ -1,0 +1,187 @@
+﻿@model BlogAdminPanel.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+
+    <style>
+        /* General Body and Layout Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;  
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #343a40;
+            color: white;
+            /* padding: 20px; */
+            display: flex;
+            flex-direction: column;
+            /* justify-content: space-between; */
+             height: 100vh; 
+            position: fixed;
+        }
+
+            .sidebar .logo {
+                font-size: 20px;
+                font-weight: bold;
+                color: white;
+                text-align: center;
+                margin-bottom: 50px;
+            }
+
+            .sidebar .menu-item {
+                /* margin: 10px 0; */
+                color: white;
+                text-decoration: none;
+                font-size: 18px;
+            }
+
+        /* Main content area */
+        .main-content {
+            flex: 1;
+            margin-left: 250px; /* To make space for sidebar */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .section {
+            padding: 40px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* width: 100%; */
+            /* max-width: 450px; */
+        }
+
+        /* Card Styling */
+        .card {
+            width: 100%;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .form-control {
+            height: 45px;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+
+            .form-control:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+                transform: translateY(-2px);
+            }
+
+        .text-danger {
+            font-size: 12px;
+            color: red;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">MyApp</div>
+        <a href="#" class="menu-item">Dashboard</a>
+        <a href="#" class="menu-item">Settings</a>
+        <a href="#" class="menu-item">Profile</a>
+        <!-- Add more sidebar links as needed -->
+    </div>
+
+    <!-- Main Content (Login Form) -->
+    <div class="main-content">
+        <section class="section">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="pt-4 pb-2">
+                        <h5 class="card-title text-center pb-0 fs-4">Login to Your Account</h5>
+                        <p class="text-center small">Enter your email & password to login</p>
+                    </div>
+
+                    <!-- Display validation summary for model state errors -->
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <!-- Login Form -->
+                    <form asp-action="Login" method="post" novalidate>
+                        <div class="col-12 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" id="email" placeholder="Enter your email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input asp-for="Password" class="form-control" id="password" type="password" placeholder="Enter your password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12 mt-3">
+                            <button class="btn btn-primary w-100" type="submit">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+</body>
+
+</html>

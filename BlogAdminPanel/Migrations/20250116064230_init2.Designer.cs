@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogAdminPanel.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250108091045_adddelete")]
-    partial class adddelete
+    [Migration("20250116064230_init2")]
+    partial class init2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -215,9 +215,6 @@ namespace BlogAdminPanel.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -313,18 +310,18 @@ namespace BlogAdminPanel.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            CreatedOn = new DateTime(2025, 1, 8, 14, 40, 44, 373, DateTimeKind.Local).AddTicks(2739),
+                            CreatedOn = new DateTime(2025, 1, 16, 12, 12, 29, 222, DateTimeKind.Local).AddTicks(8917),
                             Email = "admin@blog.com",
                             IsActive = true,
                             IsDeleted = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEC+01lwJUWFpBnzxwyeplro4RrFLIHBW+v9f3LTvudP/BXvhAlklXwnu8BtzzS6THg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEM2D1Ko4BI+eMVyNcqQF6eMwLsLwX6BkeJ9k1Pb84dXf7S9Ma2FPz94HnqLeU2hlgw==",
                             Role = "Admin",
                             UserName = "Admin"
                         });
