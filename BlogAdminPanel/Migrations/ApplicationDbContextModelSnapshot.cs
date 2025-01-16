@@ -212,9 +212,6 @@ namespace BlogAdminPanel.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -229,6 +226,70 @@ namespace BlogAdminPanel.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserUpdateDto");
+                });
+
+            modelBuilder.Entity("BlogAdminPanel.Models.SiteSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContactEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Logo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SiteName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SocialLinks")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tagline")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SiteSettings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ContactEmail = "info@defaultblog.com",
+                            ContactPhone = "123-456-7890",
+                            CreatedBy = "System",
+                            CreatedOn = new DateTime(2025, 1, 16, 12, 10, 53, 944, DateTimeKind.Local).AddTicks(3782),
+                            Logo = "/images/default-logo.png",
+                            SiteName = "Default Blog",
+                            SocialLinks = "facebook.com/defaultblog, twitter.com/defaultblog",
+                            Tagline = "Welcome to Default Blog"
+                        });
                 });
 
             modelBuilder.Entity("BlogAdminPanel.Models.Tag", b =>
@@ -310,18 +371,18 @@ namespace BlogAdminPanel.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            CreatedOn = new DateTime(2025, 1, 8, 14, 40, 44, 373, DateTimeKind.Local).AddTicks(2739),
+                            CreatedOn = new DateTime(2025, 1, 16, 12, 10, 53, 944, DateTimeKind.Local).AddTicks(2805),
                             Email = "admin@blog.com",
                             IsActive = true,
                             IsDeleted = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEC+01lwJUWFpBnzxwyeplro4RrFLIHBW+v9f3LTvudP/BXvhAlklXwnu8BtzzS6THg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEIMUynCAhfm2kLviTFKtOgcZw6zVd26dAeh6bvWGGwOsk6Fqb9WoF8UG5zmo22aow==",
                             Role = "Admin",
                             UserName = "Admin"
                         });

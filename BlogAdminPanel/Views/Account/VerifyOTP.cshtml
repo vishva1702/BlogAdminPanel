@@ -1,0 +1,24 @@
+﻿@model BlogAdminPanel.ViewModels.VerifyEmailViewModel
+
+<h2>Verify OTP</h2>
+@using (Html.BeginForm("VerifyOTP", "Account", FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.Label("OTP", "OTP", new { @class = "control-label" })
+        <input type="text" name="OTP" class="form-control" placeholder="Enter OTP" required />
+        @Html.ValidationMessage("OTP", "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Verify OTP</button>
+}
+
+@if (ViewData.ModelState.ErrorCount > 0)
+{
+    <div class="alert alert-danger mt-3">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+ 

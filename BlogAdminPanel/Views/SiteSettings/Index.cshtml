@@ -1,0 +1,92 @@
+﻿@model BlogAdminPanel.Models.DTOs.SiteSettingsDto
+
+@{
+    ViewData["Title"] = "Site Settings";
+}
+
+<style>
+    body {
+        background: linear-gradient(to bottom, #f8f9fa, #e3f2fd); /* Light gradient from white to light blue */
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+</style>
+
+<div class="card border-secondary mt-4">
+    <div class="card-header bg-light text-dark">
+        <h5 class="card-title mb-0">Site Setting Details</h5>
+    </div>
+    <div class="card-body">
+        <!-- Success Message -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        <!-- Validation Errors -->
+        @if (ViewData.ModelState.ErrorCount > 0)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+
+        <!-- Form -->
+        <form asp-action="Index" method="post" enctype="multipart/form-data">
+            <!-- Site Name -->
+            <div class="mb-3">
+                <label for="SiteName" class="form-label">Site Name</label>
+                <input type="text" class="form-control" id="SiteName" name="SiteName" value="@Model.SiteName" />
+            </div>
+
+            <!-- Tagline -->
+            <div class="mb-3">
+                <label for="Tagline" class="form-label">Tagline</label>
+                <input type="text" class="form-control" id="Tagline" name="Tagline" value="@Model.Tagline" />
+            </div>
+
+            <!-- Logo -->
+            <div class="mb-3">
+                <label for="Logo" class="form-label">Logo</label>
+                <input type="file" class="form-control" id="Logo" name="LogoFile" accept="image/*" />
+            </div>
+
+            <!-- Contact Email -->
+            <div class="mb-3">
+                <label for="ContactEmail" class="form-label">Contact Email</label>
+                <input type="email" class="form-control" id="ContactEmail" name="ContactEmail" value="@Model.ContactEmail" />
+            </div>
+
+            <!-- Contact Phone -->
+            <div class="mb-3">
+                <label for="ContactPhone" class="form-label">Contact Phone</label>
+                <input type="text" class="form-control" id="ContactPhone" name="ContactPhone" value="@Model.ContactPhone" />
+            </div>
+
+            <!-- Social Links -->
+            <div class="mb-3">
+                <label for="SocialLinks" class="form-label">Social Links</label>
+                <textarea class="form-control" id="SocialLinks" name="SocialLinks" rows="3">@Model.SocialLinks</textarea>
+            </div>
+
+            <!-- Updated By -->
+            <div class="mb-3">
+                <label for="UpdatedBy" class="form-label">Updated By</label>
+                <input type="text" class="form-control" id="UpdatedBy" name="UpdatedBy" value="@Model.UpdatedBy" />
+            </div>
+
+            <!-- Save Button -->
+            <button type="submit" class="btn btn-primary">Save Settings</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

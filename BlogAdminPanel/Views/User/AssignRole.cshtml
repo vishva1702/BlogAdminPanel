@@ -1,19 +1,78 @@
 ﻿@model BlogAdminPanel.Models.User
 
-<form method="post" asp-action="AssignRole">
-    <div class="form-group">
-        <label asp-for="Role" class="control-label">Role</label>
-        <div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" asp-for="Role" value="Admin" id="RoleAdmin" />
-                <label class="form-check-label" for="RoleAdmin">Admin</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" asp-for="Role" value="Editor" id="RoleEditor" />
-                <label class="form-check-label" for="RoleEditor">Editor</label>
-            </div>
-        </div>
-        <span asp-validation-for="Role" class="text-danger"></span>
+<style>
+    body {
+        background: linear-gradient(to bottom, #f8f9fa, #e3f2fd); /* Light gradient from white to light blue */
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        margin: 50px auto;
+        max-width: 500px;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .form-check-label {
+        display: flex;
+        align-items: center;
+    }
+
+        .form-check-label i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    .btn-primary,
+    .btn-success {
+        margin-top: 15px;
+    }
+</style>
+
+    <div class="card-header bg-light text-dark">
+    <b><h5 class="card-title mb-0">User Details</h5></b>
     </div>
-    <button type="submit" class="btn btn-primary">Assign Role</button>
-</form>
+    <br>
+    <form method="post" asp-action="AssignRole">
+        <div class="form-group mb-4">
+            <label asp-for="Role" class="form-label">Select Role</label>
+            <div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" asp-for="Role" value="Admin" id="RoleAdmin" />
+                    <label class="form-check-label" for="RoleAdmin">
+                        <i class="fas fa-user-shield text-primary"></i> Admin
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" asp-for="Role" value="Editor" id="RoleEditor" />
+                    <label class="form-check-label" for="RoleEditor">
+                        <i class="fas fa-user-edit text-info"></i> Editor
+                    </label>
+                </div>
+            </div>
+            <span asp-validation-for="Role" class="text-danger"></span>
+        </div>
+
+        <input type="submit" value="Assign Role" class="btn btn-success" />
+    </form>
+
+    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+</div>
+
+

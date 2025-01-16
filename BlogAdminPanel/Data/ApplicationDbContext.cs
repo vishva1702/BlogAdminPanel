@@ -18,12 +18,14 @@ namespace BlogAdminPanel.Data
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<SiteSettings> SiteSettings { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
+            modelBuilder.Entity<User>().ToTable("Users");
 
             // Seed Admin User
             var adminUser = new User
@@ -42,6 +44,21 @@ namespace BlogAdminPanel.Data
             };
 
             modelBuilder.Entity<User>().HasData(adminUser);
+
+            var defaultSettings = new SiteSettings
+            {
+                Id = 1,
+                SiteName = "Default Blog",
+                Tagline = "Welcome to Default Blog",
+                Logo = "/images/default-logo.png", // Default logo path
+                ContactEmail = "info@defaultblog.com",
+                ContactPhone = "123-456-7890",
+                SocialLinks = "facebook.com/defaultblog, twitter.com/defaultblog",
+                CreatedOn = DateTime.Now,
+                CreatedBy = "System"
+            };
+
+            modelBuilder.Entity<SiteSettings>().HasData(defaultSettings);
         }
         public DbSet<BlogAdminPanel.Models.DTOs.UserCreateDto> UserCreateDto { get; set; } = default!;
         public DbSet<BlogAdminPanel.Models.DTOs.UserUpdateDto> UserUpdateDto { get; set; } = default!;
