@@ -1,0 +1,55 @@
+﻿@model IEnumerable<BlogPost>
+
+@{
+    ViewBag.Title = "Archived Blog Posts";
+}
+<style>
+    body {
+        background: linear-gradient(to bottom, #f8f9fa, #e3f2fd); /* Light gradient from white to light blue */
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+</style>
+<h1>Archived Blog Posts</h1>
+
+<a asp-action="Index" class="btn btn-secondary mb-3">Back to Blog Posts</a>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Category</th>
+                <th>Tags</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in Model)
+            {
+                if (post.Status == "Archived") 
+                {
+                    <tr>
+                        <td>@post.Title</td>
+                        <td>@post.Status</td>
+                        <td>@post.Category?.Name</td>
+                        <td>@post.Tag?.Name</td>
+                        <td>
+                            <form asp-action="UnArchive" asp-route-id="@post.Id" method="post" style="display:inline-block;">
+                                <button type="submit" class="btn btn-warning btn-sm">UnArchive</button>
+                            </form>
+                        </td>
+
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No archived posts found.</p>
+}

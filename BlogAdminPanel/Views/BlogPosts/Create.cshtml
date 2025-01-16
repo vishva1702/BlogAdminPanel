@@ -1,0 +1,85 @@
+﻿@model BlogAdminPanel.Models.DTOs.BlogPostCreateDto
+
+@{
+    ViewData["Title"] = "Create Blog Post";
+}
+
+<h2>Create Blog Post</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Content"></label>
+        <textarea asp-for="Content" class="form-control"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="MetaTitle"></label>
+        <input asp-for="MetaTitle" class="form-control" />
+        <span asp-validation-for="MetaTitle" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="MetaDescription"></label>
+        <textarea asp-for="MetaDescription" class="form-control"></textarea>
+        <span asp-validation-for="MetaDescription" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Keywords"></label>
+        <input asp-for="Keywords" class="form-control" />
+        <span asp-validation-for="Keywords" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="Status">Status</label>
+        <select asp-for="Status" asp-items="ViewBag.StatusOptions" class="form-control" id="statusDropdown">
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+    <div class="form-group" id="publishDateGroup" style="display: none;">
+        <label asp-for="PublishDate"></label>
+        <input asp-for="PublishDate" type="datetime-local" class="form-control" />
+        <span asp-validation-for="PublishDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="ImageFile">Upload Image</label>
+        <input asp-for="ImageFile" type="file" class="form-control" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="CategoryId">Category</label>
+        <select asp-for="CategoryId" asp-items="ViewBag.CategoryOptions" class="form-control"></select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="TagId">Tag</label>
+        <select asp-for="TagId" asp-items="ViewBag.TagOptions" class="form-control"></select>
+        <span asp-validation-for="TagId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CreatedBy"></label>
+        <input asp-for="CreatedBy" class="form-control" />
+        <span asp-validation-for="CreatedBy" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">Create</button>
+</form>
+
+@section Scripts {
+    <script>
+        document.getElementById("statusDropdown").addEventListener("change", function () {
+            const publishDateGroup = document.getElementById("publishDateGroup");
+            if (this.value === "Published") {
+                publishDateGroup.style.display = "block";
+            } else {
+                publishDateGroup.style.display = "none";
+                document.querySelector('[name="PublishDate"]').value = "";
+            }
+        });
+
+        document.getElementById("statusDropdown").dispatchEvent(new Event("change"));
+    </script>
+}

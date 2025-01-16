@@ -9,6 +9,9 @@ namespace BlogAdminPanel.Models.DTOs
         public string Name { get; set; }
         public string CreatedBy { get; set; }
     }
+
+
+
     [NotMapped]
     public class CategoryUpdateDto
     {

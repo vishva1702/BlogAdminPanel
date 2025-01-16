@@ -1,40 +1,63 @@
-﻿@model IEnumerable<BlogAdminPanel.Models.DTOs.TagCreateDto>
+﻿@model IEnumerable<BlogAdminPanel.Models.Tag>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Tags - Index";
 }
+<style>
+    body {
+        background: linear-gradient(to bottom, #f8f9fa, #e3f2fd); /* Light gradient from white to light blue */
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+</style>
+<h1>Tags</h1>
 
-<h1>Tag</h1>
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Tags Usage Statistics</h5>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+            <p>
+                <a asp-action="Create" class="btn btn-success mb-3">Create New Tag</a>
+            </p>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tag Name</th>
+                        <th>Number of Blog Posts</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center">No tags found.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        int index = 1;
+                        foreach (var item in Model)
+                        {
+                            var blogPostCount = item.BlogPosts?.Count ?? 0;
+                            <tr>
+                                <th scope="row">@index</th>
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>@blogPostCount</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

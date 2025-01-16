@@ -1,8 +1,141 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>Admin Panel Dashboard</h1>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Blog Performance Metrics</div>
+            <div class="card-body">
+                <p>Total Views: @ViewBag.TotalViews</p>
+                <p>Total Likes: @ViewBag.TotalLikes</p>
+                <p>Total Shares: @ViewBag.TotalShares</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Post Engagement (Individual)</div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Views</th>
+                            <th>Likes</th>
+                            <th>Shares</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var post in ViewBag.PostEngagement)
+                        {
+                            <tr>
+                                <td>@post.Title</td>
+                                <td>@post.Views</td>
+                                <td>@post.Likes</td>
+                                <td>@post.Shares</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">Blog Posts</div>
+            <div class="card-body">
+                <p>Total Posts: @ViewBag.TotalPosts</p>
+                <p>Published Posts: @ViewBag.PublishedPosts</p>
+                <p>Draft Posts: @ViewBag.DraftPosts</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">Categories and Tags</div>
+            <div class="card-body">
+                <p>Total Categories: @ViewBag.TotalCategories</p>
+                <p>Total Tags: @ViewBag.TotalTags</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">Users</div>
+            <div class="card-body">
+                <p>Total Users: @ViewBag.TotalUsers</p>
+                <p>Active Users: @ViewBag.ActiveUsers</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mt-4">
+        <div class="card">
+            <div class="card-header">Comments</div>
+            <div class="card-body">
+                <p>Pending Comments: @ViewBag.PendingComments</p>
+                <p>Approved Comments: @ViewBag.ApprovedComments</p>
+            </div>
+        </div>
+    </div>
+   <div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">Blog Post Metrics</div>
+            <div class="card-body">
+                <canvas id="blogPostMetricsChart" style="max-width: 300px; max-height: 150px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('blogPostMetricsChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'pie', // Change to 'pie'
+                data: {
+                    labels: ['Total Likes', 'Total Views', 'Total Shares'],
+                    datasets: [{
+                        label: 'Blog Post Metrics',
+                        data: [@ViewBag.TotalLikes, @ViewBag.TotalViews, @ViewBag.TotalShares],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)', // Red
+                            'rgba(54, 162, 235, 0.6)', // Blue
+                            'rgba(75, 192, 192, 0.6)'  // Green
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)', // Red border
+                            'rgba(54, 162, 235, 1)', // Blue border
+                            'rgba(75, 192, 192, 1)'  // Green border
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top' // Place legend at the top
+                        },
+                        tooltip: {
+                            enabled: true // Enable tooltips for pie chart
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

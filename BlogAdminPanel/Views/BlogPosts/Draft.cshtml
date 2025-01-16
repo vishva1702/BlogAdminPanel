@@ -1,0 +1,54 @@
+﻿@model IEnumerable<BlogPost>
+
+@{
+    ViewBag.Title = "Draft Posts";
+}
+
+<style>
+    body {
+        background: linear-gradient(to bottom, #f8f9fa, #e3f2fd); /* Light gradient from white to light blue */
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+</style>
+
+<h1>Draft Posts</h1>
+
+<a asp-action="Index" class="btn btn-primary mb-3">Back to Blog Posts</a>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Tags</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in Model)
+            {
+                <tr>
+                    <td>@post.Title</td>
+                    <td>@post.Category?.Name</td>
+                    <td>@post.Tag?.Name</td>
+                    <td>
+                        <form asp-action="PublishDraft" asp-route-id="@post.Id" method="post" style="display:inline-block;">
+                            <button type="submit" class="btn btn-success btn-sm">Publish</button>
+                        </form>
+                        <form asp-action="Delete" asp-route-id="@post.Id" method="post" style="display:inline-block;">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-muted">No draft posts found.</p>
+}

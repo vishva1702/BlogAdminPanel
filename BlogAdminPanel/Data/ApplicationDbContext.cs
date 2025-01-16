@@ -48,9 +48,6 @@ namespace BlogAdminPanel.Data
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
-
         }
     }
-
-
 }

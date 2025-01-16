@@ -1,39 +1,53 @@
 ﻿@model BlogAdminPanel.Models.DTOs.TagUpdateDto
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Tag";
 }
+<style>
+    body {
+        background: linear-gradient(to bottom, #f8f9fa, #e3f2fd); /* Light gradient from white to light blue */
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+</style>
+<h1 class="mb-4">Edit Tag</h1>
 
-<h1>Edit</h1>
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+</div>
 
-<h4>TagUpdateDto</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="card border-secondary mt-4">
+    <div class="card-header bg-light text-dark">
+        <h5 class="card-title mb-0">Edit Tag Details</h5>
+    </div>
+    <div class="card-body">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+
+            <div class="form-group mb-4">
+                <label asp-for="Name" class="control-label mb-2">Tag Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Enter tag name" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="UpdatedBy" class="control-label"></label>
-                <input asp-for="UpdatedBy" class="form-control" />
+
+            <div class="form-group mb-4">
+                <label asp-for="UpdatedBy" class="control-label mb-2">Updated By</label>
+                <input asp-for="UpdatedBy" class="form-control" placeholder="Enter updater's name" />
                 <span asp-validation-for="UpdatedBy" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-success" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

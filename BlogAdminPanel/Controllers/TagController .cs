@@ -3,6 +3,7 @@ using BlogAdminPanel.Data;
 using BlogAdminPanel.Models;
 using BlogAdminPanel.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogAdminPanel.Controllers
 {
@@ -18,13 +19,15 @@ namespace BlogAdminPanel.Controllers
         }
 
         // GET: Tag
+        // GET: Tag
         public IActionResult Index()
         {
-            var tag = _context.Tags.Where(c => !c.IsDeleted).ToList();
-            var tagDtos = _mapper.Map<List<TagCreateDto>>(tag);
+            var tags = _context.Tags.Include(t => t.BlogPosts).Where(t => !t.IsDeleted).ToList();
+            var tagDtos = _mapper.Map<List<TagCreateDto>>(tags);
 
-            return View(tagDtos);
+            return View(tags); // Passing the 'tags' list directly (not DTOs) for usage statistics
         }
+
         // GET: Create Tag
         public IActionResult Create()
         {
