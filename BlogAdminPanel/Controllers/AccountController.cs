@@ -2,7 +2,6 @@
 using BlogAdminPanel.Models;
 using BlogAdminPanel.ViewModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -19,16 +18,23 @@ namespace BlogAdminPanel.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private readonly PasswordHasher<User> _passwordHasher;
-        private readonly IConfiguration _configuration;
+            private readonly ApplicationDbContext _context;
+            private readonly PasswordHasher<User> _passwordHasher;
+            private readonly IConfiguration _configuration;
+            private readonly SignInManager<IdentityUser> _signInManager;
+            private readonly UserManager<IdentityUser> _userManager;
+            private readonly ILogger<AccountController> _logger;
 
-        public AccountController(ApplicationDbContext context, IConfiguration configuration)
-        {
-            _context = context;
-            _passwordHasher = new PasswordHasher<User>();
-            _configuration = configuration;
-        }
+            public AccountController(ApplicationDbContext context, IConfiguration configuration, SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, ILogger<AccountController> logger)
+            {
+                _context = context;
+                _passwordHasher = new PasswordHasher<User>();
+                _configuration = configuration;
+                _signInManager = signInManager;
+                _userManager = userManager;
+                _logger = logger;
+            }
+
 
         [HttpGet]
         public ActionResult Login()
@@ -36,55 +42,53 @@ namespace BlogAdminPanel.Controllers
             return View();
         }
 
-
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login(LoginViewModel loginModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(new { message = "Invalid login data." });
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarning("Invalid login data.");
+                    return BadRequest(new { message = "Invalid login data." });
+                }
+
+                var user = _context.Users.FirstOrDefault(u => u.Email == loginModel.Email);
+
+                if (user == null)
+                {
+                    _logger.LogWarning($"Login attempt with invalid email: {loginModel.Email}");
+                    return Unauthorized(new { message = "Invalid email or password." });
+                }
+
+                var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, loginModel.Password);
+
+                if (passwordVerificationResult == PasswordVerificationResult.Failed)
+                {
+                    _logger.LogWarning($"Failed login attempt for email: {loginModel.Email}");
+                    return Unauthorized(new { message = "Invalid email or password." });
+                }
+
+                StoreLoginData(user.Email);
+
+                var token = GenerateToken(user);
+
+                await SetAuthCookieAsync(token);
+
+                _logger.LogInformation($"User {user.Email} logged in successfully.");
+                return RedirectToAction("Index", "Home");
             }
-
-            // Fetch user from the database using the Email address
-            var user = _context.Users.FirstOrDefault(u => u.Email == loginModel.Email);
-
-            if (user == null)
+            catch (Exception ex)
             {
-                return Unauthorized(new { message = "Invalid email or password." });
+                _logger.LogError($"Error in Login method: {ex.Message}");
+                return StatusCode(500, new { message = "Internal server error" });
             }
-
-            // Verify password
-            var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, loginModel.Password);
-
-            if (passwordVerificationResult == PasswordVerificationResult.Failed)
-            {
-                return Unauthorized(new { message = "Invalid email or password." });
-            }
-
-            // Store login data in the database
-            StoreLoginData(user.Email);
-
-            // Generate JWT token
-            var token = GenerateToken(user);
-
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddHours(1)
-            };
-
-            Response.Cookies.Append("AuthToken", token, cookieOptions);
-
-            // Redirect to UserController without specifying an action (defaults to Index)
-            return RedirectToAction("Index", "User");
         }
+
 
         private void StoreLoginData(string email)
         {
-            
             var loginHistory = new LoginHistory
             {
                 UserEmail = email,
@@ -97,30 +101,63 @@ namespace BlogAdminPanel.Controllers
             _context.SaveChanges();
         }
 
-
         private string GenerateToken(User user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[] {
-            new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role ?? "User") 
-    };
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, "Admin") // Set explicitly to "Admin"
+            };
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
+                expires: DateTime.UtcNow.AddHours(24),
                 signingCredentials: credentials
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public IActionResult VerifyEmail()
+        private async Task SetAuthCookieAsync(string token)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddHours(24)
+            };
+
+            Response.Cookies.Append("AuthToken", token, cookieOptions);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                await _signInManager.SignOutAsync();
+                Response.Cookies.Delete("AuthToken");
+
+                _logger.LogInformation("User logged out successfully.");
+                return Redirect("/Account/Login");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Logout method: {ex.Message}");
+                return StatusCode(500, new { message = "Internal server error" });
+            }
+        }
+    
+
+public IActionResult VerifyEmail()
         {
             return View(new VerifyEmailViewModel());
         }
@@ -139,9 +176,11 @@ namespace BlogAdminPanel.Controllers
                 ModelState.AddModelError("", "Email address not found.");
                 return View("VerifyEmail", model);
             }
+
             var otp = new Random().Next(100000, 999999).ToString();
             TempData["OTP"] = otp;
             TempData["Email"] = model.Email;
+
             try
             {
                 SendEmail(model.Email, "Your OTP for Password Reset", $"Your OTP is {otp}. It is valid for 10 minutes.");
@@ -154,6 +193,7 @@ namespace BlogAdminPanel.Controllers
 
             return RedirectToAction("VerifyOTP");
         }
+
         public IActionResult VerifyOTP()
         {
             return View();
@@ -176,7 +216,7 @@ namespace BlogAdminPanel.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View(); 
+                return View();
             }
 
             TempData["VerifiedEmail"] = email;
@@ -209,7 +249,6 @@ namespace BlogAdminPanel.Controllers
                 return View(model);
             }
 
-            // Hash the new password and update
             user.PasswordHash = _passwordHasher.HashPassword(user, model.NewPassword);
             user.UpdatedOn = DateTime.Now;
 
@@ -226,7 +265,6 @@ namespace BlogAdminPanel.Controllers
             return RedirectToAction("Login");
         }
 
-        // Method to send email (for OTP)
         private void SendEmail(string toEmail, string subject, string body)
         {
             var fromAddress = new MailAddress("havendesign3@gmail.com");
@@ -252,5 +290,6 @@ namespace BlogAdminPanel.Controllers
                 smtp.Send(message);
             }
         }
+   
     }
 }

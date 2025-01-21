@@ -4,62 +4,190 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BlogAdminPanel</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BlogAdminPanel.styles.css" asp-append-version="true" />
-    <link href="~/css/style.css" rel="stylesheet" />
+    <!-- Favicons -->
+    <link href="~/assets/img/favicon.png" rel="icon">
+    <link href="~/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="~/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="~/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="~/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="~/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="~/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="~/assets/css/style.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Nunito|Poppins" rel="stylesheet">
 </head>
 <body>
-    <!-- Header (Navbar) -->
+    <!-- Header -->
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom shadow-sm mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BlogAdminPanel</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
+
+                    <!-- Logout Button or Link -->
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form method="post" asp-controller="Account" asp-action="Logout" class="d-inline">
+                            <button type="submit" class="btn btn-link nav-link" style="color: #000; padding: 0;">Logout</button>
+                        </form>
+                    }
                 </div>
             </div>
         </nav>
     </header>
-    <!-- ======= Sidebar ======= -->
- <!-- End Sidebar-->
 
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-sm-3 col-md-2 sidebar">
-                <ul class="nav flex-column">
-                    <!-- New User Controller Link -->
+
+    <div class="d-flex">
+        @if (ViewContext.RouteData.Values["Controller"]?.ToString() != "Account" ||
+        ViewContext.RouteData.Values["Action"]?.ToString() != "Login")
+        {
+
+            <aside id="sidebar" class="sidebar">
+
+                <ul class="sidebar-nav" id="sidebar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("Index", "User")">Users</a>
+                        <a class="nav-link collapsed" asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-grid"></i>
+                            <span>Home</span>
+                        </a>
                     </li>
-                </ul>
-            </div>
 
-            <!-- Main content area -->
-            <div class="col-sm-9 col-md-10 main-content">
-                <main role="main" class="pb-3">
-                    @RenderBody()
-                </main>
-            </div>
-        </div>
+
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#blog-nav" data-bs-toggle="collapse" href="#">
+                            <i class="bi bi-menu-button-wide"></i><span>Blog Posts</span><i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="blog-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a href="components-accordion.html">
+                                    <i class="bi bi-circle"></i><span>List Blog Posts</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="content/country/country.html">
+                                    <i class="bi bi-circle"></i><span>Add Blog Posts</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="content/country/country.html">
+                                    <i class="bi bi-circle"></i><span>Manage Blog Posts</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#category-nav" data-bs-toggle="collapse" href="#">
+                            <i class="bi bi-menu-button-wide"></i><span>Category</span><i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="category-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a href="components-accordion.html">
+                                    <i class="bi bi-circle"></i><span>List Category</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="content/country/country.html">
+                                    <i class="bi bi-circle"></i><span>Add Category</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="content/country/country.html">
+                                    <i class="bi bi-circle"></i><span>Manage Category</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#tag-nav" data-bs-toggle="collapse" href="#">
+                            <i class="bi bi-menu-button-wide"></i><span>Tag</span><i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="tag-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a href="components-accordion.html">
+                                    <i class="bi bi-circle"></i><span>List Tag</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="content/country/country.html">
+                                    <i class="bi bi-circle"></i><span>Add Tag</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="content/country/country.html">
+                                    <i class="bi bi-circle"></i><span>Manage Tag</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- End Components Nav -->
+                </ul>
+
+            </aside>
+
+            <!-- End Sidebar-->
+            <!-- End Sidebar-->
+            <!-- End Sidebar -->
+        }
+        <!-- Main Content -->
+        <main class="container-fluid mt-3">
+            @RenderBody()
+        </main>
     </div>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- Footer -->
+    <footer class="border-top footer text-muted mt-5 py-3 bg-light">
+        <div class="container text-center">
+            &copy; 2025 - BlogAdminPanel - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <!-- Vendor JS Files -->
+    <script src="~/assets/vendor/apexcharts/apexcharts.min.js"></script>
+    <script src="~/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/vendor/chart.js/chart.umd.js"></script>
+    <script src="~/assets/vendor/echarts/echarts.min.js"></script>
+    <script src="~/assets/vendor/quill/quill.js"></script>
+    <script src="~/assets/vendor/simple-datatables/simple-datatables.js"></script>
+    <script src="~/assets/vendor/tinymce/tinymce.min.js"></script>
+    <script src="~/assets/vendor/php-email-form/validate.js"></script>
+
+    <!-- Template Main JS File -->
+    <script src="~/assets/js/main.js"></script>
+
+    <!-- Scripts -->
+    @* <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script> *@
+    @* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script> *@
+    @* <script src="~/js/site.js" asp-append-version="true"></script> *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

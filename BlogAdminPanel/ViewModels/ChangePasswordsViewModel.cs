@@ -17,5 +17,6 @@ namespace BlogAdminPanel.ViewModels
         [DataType(DataType.Password)] // Marks as a password field
         [Compare("NewPassword", ErrorMessage = "New password and confirm password do not match.")]
         public string ConfirmPassword { get; set; }
+        public string OldPassword { get; internal set; }
     }
 }
