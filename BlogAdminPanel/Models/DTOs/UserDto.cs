@@ -21,7 +21,6 @@ namespace BlogAdminPanel.Models.DTOs
         public string UserName { get; set; }
         public string Email { get; set; }
         public bool IsActive { get; set; }
-        public string UpdatedBy { get; set; }
         public DateTime UpdatedOn { get; set; } = DateTime.UtcNow;
     }
 
@@ -34,7 +33,6 @@ namespace BlogAdminPanel.Models.DTOs
         public string ContactEmail { get; set; }
         public string ContactPhone { get; set; }
         public string SocialLinks { get; set; }
-        public string UpdatedBy { get; set; }
         public DateTime UpdatedOn { get; set; } = DateTime.UtcNow;
     }
 }

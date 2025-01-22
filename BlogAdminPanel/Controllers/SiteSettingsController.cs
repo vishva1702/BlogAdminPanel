@@ -88,6 +88,7 @@ namespace BlogAdminPanel.Controllers
                 settings.ContactEmail = model.ContactEmail;
                 settings.ContactPhone = model.ContactPhone;
                 settings.SocialLinks = model.SocialLinks;
+                settings.UpdatedBy = "Admin";
                 settings.UpdatedOn = DateTime.Now;
 
                 _context.SiteSettings.Update(settings);

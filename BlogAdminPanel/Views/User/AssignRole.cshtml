@@ -1,78 +1,73 @@
 ﻿@model BlogAdminPanel.Models.User
 
-<style>
-    body {
-        background: linear-gradient(to bottom, #f8f9fa, #e3f2fd); /* Light gradient from white to light blue */
-        margin: 0;
-        padding: 0;
-        min-height: 100vh;
-        font-family: Arial, sans-serif;
-    }
+@{
+    ViewData["Title"] = "Assign Role";
+}
 
-    .container {
-        margin: 50px auto;
-        max-width: 500px;
-        padding: 20px;
-        background-color: white;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-    }
+<!-- Google Fonts -->
+<link href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-    .btn {
-        width: 100%;
-        padding: 10px;
-        font-size: 16px;
-    }
+<!-- Vendor CSS Files -->
+<link href="~/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="~/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+<link href="~/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+<link href="~/vendor/quill/quill.snow.css" rel="stylesheet">
+<link href="~/vendor/quill/quill.bubble.css" rel="stylesheet">
+<link href="~/vendor/remixicon/remixicon.css" rel="stylesheet">
+<link href="~/vendor/simple-datatables/style.css" rel="stylesheet">
 
-    .form-check-label {
-        display: flex;
-        align-items: center;
-    }
+<!-- Template Main CSS File -->
+<link href="~/css/style.css" rel="stylesheet">
 
-        .form-check-label i {
-            margin-right: 10px;
-            font-size: 18px;
-        }
 
-    h1 {
-        text-align: center;
-        color: #333;
-    }
-
-    .btn-primary,
-    .btn-success {
-        margin-top: 15px;
-    }
-</style>
-
-    <div class="card-header bg-light text-dark">
-    <b><h5 class="card-title mb-0">User Details</h5></b>
-    </div>
-    <br>
-    <form method="post" asp-action="AssignRole">
-        <div class="form-group mb-4">
-            <label asp-for="Role" class="form-label">Select Role</label>
-            <div>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" asp-for="Role" value="Admin" id="RoleAdmin" />
-                    <label class="form-check-label" for="RoleAdmin">
-                        <i class="fas fa-user-shield text-primary"></i> Admin
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" asp-for="Role" value="Editor" id="RoleEditor" />
-                    <label class="form-check-label" for="RoleEditor">
-                        <i class="fas fa-user-edit text-info"></i> Editor
-                    </label>
-                </div>
-            </div>
-            <span asp-validation-for="Role" class="text-danger"></span>
+<div class="container">
+    <div class="card border-secondary">
+        <div class="card-header bg-light text-dark">
+            <h5 class="card-title mb-0">Assign Role</h5>
         </div>
+        <div class="card-body">
+            <form method="post" asp-action="AssignRole" class="row g-3 needs-validation" novalidate>
+                <div class="form-group mb-4">
+                    <label asp-for="Role" class="form-label">Select Role</label>
+                    <div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" asp-for="Role" value="Admin" id="RoleAdmin" />
+                            <label class="form-check-label" for="RoleAdmin">
+                                <i class="bi bi-shield-lock-fill text-primary"></i> Admin
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="Role" value="Editor" id="RoleEditor" />
+                            <label class="form-check-label" for="RoleEditor">
+                                <i class="bi bi-pencil-fill text-info"></i> Editor
+                            </label>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
 
-        <input type="submit" value="Assign Role" class="btn btn-success" />
-    </form>
-
-    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                <!-- Buttons -->
+                <div class="text-center">
+                    <input type="submit" value="Assign Role" class="btn btn-success" />
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
+<!-- Vendor JS Files -->
+<script src="~/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/vendor/chart.js/chart.umd.js"></script>
+<script src="~/vendor/echarts/echarts.min.js"></script>
+<script src="~/vendor/quill/quill.js"></script>
+<script src="~/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="~/vendor/tinymce/tinymce.min.js"></script>
+<script src="~/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="~/js/main.js"></script>

@@ -4,89 +4,99 @@
     ViewData["Title"] = "Site Settings";
 }
 
-<style>
-    body {
-        background: linear-gradient(to bottom, #f8f9fa, #e3f2fd); /* Light gradient from white to light blue */
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-    }
-</style>
+<link href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-<div class="card border-secondary mt-4">
-    <div class="card-header bg-light text-dark">
-        <h5 class="card-title mb-0">Site Setting Details</h5>
-    </div>
-    <div class="card-body">
-        <!-- Success Message -->
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success">
-                @TempData["SuccessMessage"]
-            </div>
-        }
+<link href="~/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="~/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+<link href="~/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+<link href="~/vendor/quill/quill.snow.css" rel="stylesheet">
+<link href="~/vendor/quill/quill.bubble.css" rel="stylesheet">
+<link href="~/vendor/remixicon/remixicon.css" rel="stylesheet">
+<link href="~/vendor/simple-datatables/style.css" rel="stylesheet">
 
-        <!-- Validation Errors -->
-        @if (ViewData.ModelState.ErrorCount > 0)
-        {
-            <div class="alert alert-danger">
-                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    <p>@error.ErrorMessage</p>
-                }
-            </div>
-        }
+<link href="~/css/style.css" rel="stylesheet">
 
-        <!-- Form -->
-        <form asp-action="Index" method="post" enctype="multipart/form-data">
-            <!-- Site Name -->
-            <div class="mb-3">
-                <label for="SiteName" class="form-label">Site Name</label>
-                <input type="text" class="form-control" id="SiteName" name="SiteName" value="@Model.SiteName" />
-            </div>
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Site Settings</h5>
 
-            <!-- Tagline -->
-            <div class="mb-3">
-                <label for="Tagline" class="form-label">Tagline</label>
-                <input type="text" class="form-control" id="Tagline" name="Tagline" value="@Model.Tagline" />
-            </div>
+            <!-- Success Message -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
 
-            <!-- Logo -->
-            <div class="mb-3">
-                <label for="Logo" class="form-label">Logo</label>
-                <input type="file" class="form-control" id="Logo" name="LogoFile" accept="image/*" />
-            </div>
+            <!-- Validation Errors -->
+            @if (ViewData.ModelState.ErrorCount > 0)
+            {
+                <div class="alert alert-danger">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <p>@error.ErrorMessage</p>
+                    }
+                </div>
+            }
 
-            <!-- Contact Email -->
-            <div class="mb-3">
-                <label for="ContactEmail" class="form-label">Contact Email</label>
-                <input type="email" class="form-control" id="ContactEmail" name="ContactEmail" value="@Model.ContactEmail" />
-            </div>
+            <!-- Form -->
+            <form asp-action="Index" method="post" enctype="multipart/form-data">
+                <!-- Site Name -->
+                <div class="mb-3">
+                    <label for="SiteName" class="form-label">Site Name</label>
+                    <input type="text" class="form-control" id="SiteName" name="SiteName" value="@Model.SiteName" />
+                </div>
 
-            <!-- Contact Phone -->
-            <div class="mb-3">
-                <label for="ContactPhone" class="form-label">Contact Phone</label>
-                <input type="text" class="form-control" id="ContactPhone" name="ContactPhone" value="@Model.ContactPhone" />
-            </div>
+                <!-- Tagline -->
+                <div class="mb-3">
+                    <label for="Tagline" class="form-label">Tagline</label>
+                    <input type="text" class="form-control" id="Tagline" name="Tagline" value="@Model.Tagline" />
+                </div>
 
-            <!-- Social Links -->
-            <div class="mb-3">
-                <label for="SocialLinks" class="form-label">Social Links</label>
-                <textarea class="form-control" id="SocialLinks" name="SocialLinks" rows="3">@Model.SocialLinks</textarea>
-            </div>
+                <!-- Logo -->
+                <div class="mb-3">
+                    <label for="Logo" class="form-label">Logo</label>
+                    <input type="file" class="form-control" id="Logo" name="LogoFile" accept="image/*" />
+                </div>
 
-            <!-- Updated By -->
-            <div class="mb-3">
-                <label for="UpdatedBy" class="form-label">Updated By</label>
-                <input type="text" class="form-control" id="UpdatedBy" name="UpdatedBy" value="@Model.UpdatedBy" />
-            </div>
+                <!-- Contact Email -->
+                <div class="mb-3">
+                    <label for="ContactEmail" class="form-label">Contact Email</label>
+                    <input type="email" class="form-control" id="ContactEmail" name="ContactEmail" value="@Model.ContactEmail" />
+                </div>
 
-            <!-- Save Button -->
-            <button type="submit" class="btn btn-primary">Save Settings</button>
-        </form>
+                <!-- Contact Phone -->
+                <div class="mb-3">
+                    <label for="ContactPhone" class="form-label">Contact Phone</label>
+                    <input type="text" class="form-control" id="ContactPhone" name="ContactPhone" value="@Model.ContactPhone" />
+                </div>
+
+                <!-- Social Links -->
+                <div class="mb-3">
+                    <label for="SocialLinks" class="form-label">Social Links</label>
+                    <textarea class="form-control" id="SocialLinks" name="SocialLinks" rows="3">@Model.SocialLinks</textarea>
+                </div>
+
+                <!-- Save Button -->
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+            </form>
+        </div>
     </div>
 </div>
 
-@section Scripts {
-    @await Html.PartialAsync("_ValidationScriptsPartial")
-}
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Vendor JS Files -->
+<script src="~/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/vendor/chart.js/chart.umd.js"></script>
+<script src="~/vendor/echarts/echarts.min.js"></script>
+<script src="~/vendor/quill/quill.js"></script>
+<script src="~/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="~/vendor/tinymce/tinymce.min.js"></script>
+<script src="~/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="~/js/main.js"></script>

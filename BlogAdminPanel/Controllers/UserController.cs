@@ -82,6 +82,8 @@ namespace BlogAdminPanel.Controllers
                     if (existingUser != null)
                     {
                         _mapper.Map(userDto, existingUser);
+                        existingUser.UpdatedBy = "Admin";
+                        existingUser.UpdatedOn = DateTime.Now;
                         _context.Users.Update(existingUser);
                         _context.SaveChanges();
                         return RedirectToAction("Index");
