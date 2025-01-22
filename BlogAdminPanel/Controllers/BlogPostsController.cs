@@ -19,38 +19,34 @@ namespace BlogAdminPanel.Controllers
             _context = context;
         }
 
-
-
         // Index
-        public IActionResult Index()
+        public IActionResult Index(string searchQuery, int page = 1, int pageSize = 5)
         {
-            var posts = _context.BlogPosts
-                                .Where(bp => !bp.IsDeleted && bp.Status != "Draft" && bp.Status != "Archived") // Exclude Draft and Archived posts
+            var query = _context.BlogPosts
+                                .Where(bp => !bp.IsDeleted && bp.Status != "Draft" && bp.Status != "Archived")
                                 .Include(bp => bp.Category)
                                 .Include(bp => bp.Tag)
-                                .ToList();
+                                .AsQueryable();
 
-            foreach (var post in posts)
+            if (!string.IsNullOrEmpty(searchQuery))
             {
-                if (post.PublishedDate.HasValue && post.PublishedDate > DateTime.Now && post.Status != "Published")
-                {
-                    post.Status = "Upcoming";
-                }
-
-                if (post.PublishedDate.HasValue && post.PublishedDate <= DateTime.Now && post.Status != "Published")
-                {
-                    post.Status = "Published";
-                    post.IsPublished = true;
-                    post.PublishedDate = DateTime.Now;
-                }
+                searchQuery = searchQuery.ToLower();
+                query = query.Where(bp => bp.Title != null && bp.Title.ToLower().Contains(searchQuery));
             }
 
-            _context.SaveChanges();
+            int totalItems = query.Count();
+
+            var posts = query.Skip((page - 1) * pageSize)
+                             .Take(pageSize)
+                             .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+            ViewBag.SearchQuery = searchQuery;
 
             return View(posts);
         }
-
-
 
 
 
@@ -111,12 +107,12 @@ namespace BlogAdminPanel.Controllers
                 IsDraft = dto.Status == "Draft",
                 IsPublished = dto.Status == "Published",
                 IsArchived = dto.Status == "Archived",
-                PublishedDate = dto.Status == "Published" ? dto.PublishDate : (DateTime?)null 
+                PublishedDate = dto.Status == "Published" ? dto.PublishDate : (DateTime?)null
             };
 
             if (blogPost.PublishedDate.HasValue && blogPost.PublishedDate > DateTime.Now)
             {
-                blogPost.Status = "Upcoming"; 
+                blogPost.Status = "Upcoming";
             }
 
             _context.BlogPosts.Add(blogPost);
@@ -124,8 +120,6 @@ namespace BlogAdminPanel.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-
 
         // Edit
         public IActionResult Edit(int id)
@@ -172,7 +166,7 @@ namespace BlogAdminPanel.Controllers
             if (blogPost == null)
                 return NotFound();
 
-            string imagePath = blogPost.Image; 
+            string imagePath = blogPost.Image;
 
             if (dto.ImageFile != null && dto.ImageFile.Length > 0)
             {
@@ -218,8 +212,6 @@ namespace BlogAdminPanel.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
-
         // Delete
         public IActionResult Delete(int id)
         {
@@ -231,7 +223,6 @@ namespace BlogAdminPanel.Controllers
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
-
 
         // Archive
         public IActionResult Archive()
@@ -264,8 +255,6 @@ namespace BlogAdminPanel.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
-
         // UnArchive
         public IActionResult UnArchive(int id)
         {
@@ -274,7 +263,7 @@ namespace BlogAdminPanel.Controllers
             if (blogPost == null)
                 return NotFound();
 
-            return View(blogPost); 
+            return View(blogPost);
         }
 
         [HttpPost]
@@ -286,21 +275,22 @@ namespace BlogAdminPanel.Controllers
             if (blogPost == null)
                 return NotFound();
 
-            blogPost.Status = "Published"; 
+            blogPost.Status = "Published";
             blogPost.IsArchived = false;
             blogPost.IsPublished = true;
 
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(Index)); 
+            return RedirectToAction(nameof(Index));
         }
-
-
 
         // Publish
         public IActionResult Publish(int id)
         {
-            var blogPost = _context.BlogPosts.FirstOrDefault(bp => bp.Id == id && bp.Status == "Published");
+            var blogPost = _context.BlogPosts
+                                   .Include(bp => bp.Category)
+                                   .Include(bp => bp.Tag)
+                                   .FirstOrDefault(bp => bp.Id == id && bp.Status == "Published");
 
             if (blogPost == null)
                 return NotFound();
@@ -308,20 +298,19 @@ namespace BlogAdminPanel.Controllers
             return View(blogPost);
         }
 
-
-
         // Draft
         public IActionResult Draft()
         {
             var draftPosts = _context.BlogPosts
                                      .Where(bp => bp.Status == "Draft" && !bp.IsDeleted)
-                                     .Include(bp => bp.Category) 
-                                     .Include(bp => bp.Tag) 
+                                     .Include(bp => bp.Category)
+                                     .Include(bp => bp.Tag)
                                      .ToList();
 
             return View(draftPosts);
         }
 
+        // PublishDraft
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult PublishDraft(int id)
@@ -344,7 +333,6 @@ namespace BlogAdminPanel.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
 
         // Dropdown : draft,publish,archived
         private SelectList GetStatusDropdown()

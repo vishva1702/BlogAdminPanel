@@ -1,141 +1,213 @@
-﻿@{
-    ViewData["Title"] = "Dashboard";
-}
+﻿<!DOCTYPE html>
+<html lang="en">
 
-<h1>Admin Panel Dashboard</h1>
-<div class="row">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">Blog Performance Metrics</div>
-            <div class="card-body">
-                <p>Total Views: @ViewBag.TotalViews</p>
-                <p>Total Likes: @ViewBag.TotalLikes</p>
-                <p>Total Shares: @ViewBag.TotalShares</p>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Dashboard - NiceAdmin Bootstrap Template</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="~/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet    
+    <link href="~/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="~/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="~/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="~/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="~/assets/css/style.css" rel="stylesheet">
+
+    <!-- =======================================================
+    * Template Name: NiceAdmin
+    * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
+    * Updated: Apr 20 2024 with Bootstrap v5.3.3
+    * Author: BootstrapMade.com
+    * License: https://bootstrapmade.com/license/
+    ======================================================== -->
+</head>
+
+<body>
+
+    <!-- ======= Header ======= -->
+
+    <h1 class="card-title" style="font-size:30px">Admin Panel Dashboard</h1>
+    <div class="row">
+
+
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card" style="height:200px;box-shadow: 10px 10px 10px lightgray">
+                    <div class="card-header">Blog Posts</div>
+                    <div class="card-body" style="padding:15px">
+                        <p>Total Posts: @ViewBag.TotalPosts</p>
+                        <p>Published Posts: @ViewBag.PublishedPosts</p>
+                        <p>Draft Posts: @ViewBag.DraftPosts</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card" style="height:200px;box-shadow: 10px 10px 10px lightgray">
+                    <div class="card-header">Categories and Tags</div>
+                    <div class="card-body" style="padding:15px">
+                        <p>Total Categories: @ViewBag.TotalCategories</p>
+                        <p>Total Tags: @ViewBag.TotalTags</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card" style="height:200px;box-shadow: 10px 10px 10px lightgray">
+                    <div class="card-header">Users</div>
+                    <div class="card-body" style="padding:15px">
+                        <p>Total Users: @ViewBag.TotalUsers</p>
+                        <p>Active Users: @ViewBag.ActiveUsers</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card" style="height:200px;box-shadow: 10px 10px 10px lightgray">
+                    <div class="card-header">Comments</div>
+                    <div class="card-body" style="padding:15px">
+                        <p>Pending Comments: @ViewBag.PendingComments</p>
+                        <p>Approved Comments: @ViewBag.ApprovedComments</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card" style="height:200px;box-shadow: 10px 10px 10px lightgray">
+                    <div class="card-header">Blog Post Metrics</div>
+                    <div class="card-body" style="padding:15px">
+                        <div id="donutChart" style="min-height: 150px;" class="echart"></div>
+                    </div>                            <!-- Donut Chart -->
+
+                </div>
+            </div>
+
+      
+
+
+
+        <div class="col-md-4">
+            <div class="card" style="height:200px;box-shadow: 10px 10px 10px lightgray">
+                <div class="card-header">Blog Performance Metrics</div>
+                <div class="card-body" style="padding:15px">
+                    <p>Total Views: @ViewBag.TotalViews</p>
+                    <p>Total Likes: @ViewBag.TotalLikes</p>
+                    <p>Total Shares: @ViewBag.TotalShares</p>
+                </div>
             </div>
         </div>
-    </div>
+        <div>
 
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">Post Engagement (Individual)</div>
-            <div class="card-body">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Views</th>
-                            <th>Likes</th>
-                            <th>Shares</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var post in ViewBag.PostEngagement)
-                        {
-                            <tr>
-                                <td>@post.Title</td>
-                                <td>@post.Views</td>
-                                <td>@post.Likes</td>
-                                <td>@post.Shares</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+
+            <div class="col-md-12">
+                <div class="card" style="box-shadow: 10px 10px 10px lightgray">
+                    <div class="card-header">Post Engagement (Individual)</div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Views</th>
+                                    <th>Likes</th>
+                                    <th>Shares</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var post in ViewBag.PostEngagement)
+                                {
+                                    <tr>
+                                        <td>@post.Title</td>
+                                        <td>@post.Views</td>
+                                        <td>@post.Likes</td>
+                                        <td>@post.Shares</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-
-
-
-
-<div class="row">
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">Blog Posts</div>
-            <div class="card-body">
-                <p>Total Posts: @ViewBag.TotalPosts</p>
-                <p>Published Posts: @ViewBag.PublishedPosts</p>
-                <p>Draft Posts: @ViewBag.DraftPosts</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">Categories and Tags</div>
-            <div class="card-body">
-                <p>Total Categories: @ViewBag.TotalCategories</p>
-                <p>Total Tags: @ViewBag.TotalTags</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">Users</div>
-            <div class="card-body">
-                <p>Total Users: @ViewBag.TotalUsers</p>
-                <p>Active Users: @ViewBag.ActiveUsers</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4 mt-4">
-        <div class="card">
-            <div class="card-header">Comments</div>
-            <div class="card-body">
-                <p>Pending Comments: @ViewBag.PendingComments</p>
-                <p>Approved Comments: @ViewBag.ApprovedComments</p>
-            </div>
-        </div>
-    </div>
-   <div class="row mt-4">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">Blog Post Metrics</div>
-            <div class="card-body">
-                <canvas id="blogPostMetricsChart" style="max-width: 300px; max-height: 150px;"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-@section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var ctx = document.getElementById('blogPostMetricsChart').getContext('2d');
-            var chart = new Chart(ctx, {
-                type: 'pie', // Change to 'pie'
-                data: {
-                    labels: ['Total Likes', 'Total Views', 'Total Shares'],
-                    datasets: [{
-                        label: 'Blog Post Metrics',
-                        data: [@ViewBag.TotalLikes, @ViewBag.TotalViews, @ViewBag.TotalShares],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.6)', // Red
-                            'rgba(54, 162, 235, 0.6)', // Blue
-                            'rgba(75, 192, 192, 0.6)'  // Green
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)', // Red border
-                            'rgba(54, 162, 235, 1)', // Blue border
-                            'rgba(75, 192, 192, 1)'  // Green border
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top' // Place legend at the top
-                        },
+        @section Scripts {
+            <script src="~/assets/vendor/echarts/echarts.min.js"></script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    echarts.init(document.querySelector("#donutChart")).setOption({
                         tooltip: {
-                            enabled: true // Enable tooltips for pie chart
-                        }
-                    }
-                }
-            });
-        });
-    </script>
-}
+                            trigger: 'item'
+                        },
+                        legend: {
+
+                            left: 'center'
+                        },
+                        series: [{
+                            name: 'Blog Metrics',
+                            type: 'pie',
+
+
+                            radius: ['40%', '70%'],
+                            avoidLabelOverlap: false,
+                            label: {
+                                show: false,
+                                position: 'center'
+                            },
+                            emphasis: {
+                                label: {
+                                    show: true,
+                                    fontSize: '7',
+                                    fontWeight: 'bold'
+                                }
+                            },
+                            labelLine: {
+                                show: false
+                            },
+                            data: [
+                                {
+                                    value: @ViewBag.TotalLikes,
+                                    name: 'Total Likes'
+                                },
+                                {
+                                    value: @ViewBag.TotalViews,
+                                    name: 'Total Views'
+                                },
+                                {
+                                    value: @ViewBag.TotalShares,
+                                    name: 'Total Shares'
+                                }
+                            ]
+                        }]
+                    });
+                });
+            </script>
+        }
+        <script src="~/assets/vendor/apexcharts/apexcharts.min.js"></script>
+        <script src="~/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="~/assets/vendor/chart.js/chart.umd.js"></script>
+        <script src="~/assets/vendor/echarts/echarts.min.js"></script>
+        <script src="~/assets/vendor/quill/quill.js"></script>
+        <script src="~/assets/vendor/simple-datatables/simple-datatables.js"></script>
+        <script src="~/assets/vendor/tinymce/tinymce.min.js"></script>
+        <script src="~/assets/vendor/php-email-form/validate.js"></script>
+
+        <!-- Template Main JS File -->
+        <script src="~/assets/js/main.js"></script>
+
+</body>
+
+</html>

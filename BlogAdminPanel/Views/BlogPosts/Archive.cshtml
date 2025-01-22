@@ -3,53 +3,65 @@
 @{
     ViewBag.Title = "Archived Blog Posts";
 }
+
 <style>
     body {
-        background: linear-gradient(to bottom, #f8f9fa, #e3f2fd); /* Light gradient from white to light blue */
+        background: linear-gradient(to bottom, #f8f9fa, #e3f2fd); 
         margin: 0;
         padding: 0;
         font-family: Arial, sans-serif;
     }
 </style>
+
 <h1>Archived Blog Posts</h1>
 
-<a asp-action="Index" class="btn btn-secondary mb-3">Back to Blog Posts</a>
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title"><b>Archived Blog Posts Details</b></h5>
 
-@if (Model != null && Model.Any())
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Category</th>
-                <th>Tags</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var post in Model)
+            <p>
+                <a asp-action="Index" class="btn btn-primary mb-3">Back to Blog Posts</a>
+            </p>
+
+            @if (Model != null && Model.Any())
             {
-                if (post.Status == "Archived") 
-                {
-                    <tr>
-                        <td>@post.Title</td>
-                        <td>@post.Status</td>
-                        <td>@post.Category?.Name</td>
-                        <td>@post.Tag?.Name</td>
-                        <td>
-                            <form asp-action="UnArchive" asp-route-id="@post.Id" method="post" style="display:inline-block;">
-                                <button type="submit" class="btn btn-warning btn-sm">UnArchive</button>
-                            </form>
-                        </td>
-
-                    </tr>
-                }
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Category</th>
+                            <th>Tags</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var post in Model)
+                        {
+                            if (post.Status == "Archived")
+                            {
+                                <tr>
+                                    <td>@post.Title</td>
+                                    <td>@post.Status</td>
+                                    <td>@post.Category?.Name</td>
+                                    <td>@post.Tag?.Name</td>
+                                    <td>
+                                        <form asp-action="UnArchive" asp-route-id="@post.Id" method="post" style="display:inline-block;">
+                                            <button type="submit" class="btn btn-warning btn-sm">UnArchive</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
             }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>No archived posts found.</p>
-}
+            else
+            {
+
+                <p class="text-center">No archived posts found.</p>
+            }
+        </div>
+    </div>
+</div>

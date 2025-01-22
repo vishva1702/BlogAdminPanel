@@ -2,11 +2,15 @@
 
 @{
     ViewBag.Title = "Blog Posts";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int pageSize = ViewBag.PageSize ?? 10;
+    int totalItems = ViewBag.TotalItems ?? 0;
+    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 }
 
 <style>
     body {
-        background: linear-gradient(to bottom, #f8f9fa, #e3f2fd); /* Light gradient from white to light blue */
+        background: linear-gradient(to bottom, #f8f9fa, #e3f2fd);
         margin: 0;
         padding: 0;
         font-family: Arial, sans-serif;
@@ -19,9 +23,31 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Blog Posts Details</h5>
-            <p>
-                <a asp-action="Create" class="btn btn-primary mb-3"> Create Posts</a>
 
+            <!-- Search Form -->
+            <form asp-action="Index" method="get" class="mb-3">
+                <div class="row justify-content-between align-items-center mb-3">
+                    <div class="col-md-8">
+                        <form method="get" asp-action="Index">
+                            <div class="input-group">
+                                <input type="text"
+                                       name="searchQuery"
+                                       class="form-control"
+                                       placeholder="Search blogposts by title..."
+                                       value="@ViewBag.SearchQuery" />
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search"></i> Search
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </form>
+
+            <p>
+                <a asp-action="Create" class="btn btn-success mb-3">Create Posts</a>
                 <a asp-action="Draft" class="btn btn-primary mb-3">View Draft Posts</a>
                 <a asp-action="Archive" class="btn btn-success mb-3">View Archived Posts</a>
             </p>
@@ -47,35 +73,55 @@
                     {
                         @foreach (var post in Model)
                         {
-                            if (post.Status != "Archived")
-                            {
-                                <tr>
-                                    <td>@post.Title</td>
-                                    <td>@post.Status</td>
-                                    <td>@post.Category?.Name</td>
-                                    <td>@post.Tag?.Name</td>
-                                    <td>
-                                        <a asp-action="Edit" asp-route-id="@post.Id" class="btn btn-primary btn-sm">Edit</a>
-
-                                        <form asp-action="Archive" asp-route-id="@post.Id" method="post" style="display:inline-block;">
-                                            <button type="submit" class="btn btn-warning btn-sm">Archive</button>
-                                        </form>
-
-                                        <form asp-action="Delete" asp-route-id="@post.Id" method="post" style="display:inline-block;">
-                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                        </form>
-
-                                        @if (post.Status == "Published")
-                                        {
-                                            <a asp-action="Publish" asp-route-id="@post.Id" class="btn btn-success btn-sm">View Published</a>
-                                        }
-                                    </td>
-                                </tr>
-                            }
+                            <tr>
+                                <td>@post.Title</td>
+                                <td>@post.Status</td>
+                                <td>@post.Category?.Name</td>
+                                <td>@post.Tag?.Name</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@post.Id" class="btn btn-primary btn-sm">Edit</a>
+                                    <form asp-action="Archive" asp-route-id="@post.Id" method="post" style="display:inline-block;">
+                                        <button type="submit" class="btn btn-warning btn-sm">Archive</button>
+                                    </form>
+                                    <form asp-action="Delete" asp-route-id="@post.Id" method="post" style="display:inline-block;">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                    @if (post.Status == "Published")
+                                    {
+                                        <a asp-action="Publish" asp-route-id="@post.Id" class="btn btn-success btn-sm">View Published</a>
+                                    }
+                                </td>
+                            </tr>
                         }
                     }
                 </tbody>
             </table>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @if (currentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-searchQuery="@ViewBag.SearchQuery">Previous</a>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchQuery="@ViewBag.SearchQuery">@i</a>
+                        </li>
+                    }
+
+                    @if (currentPage < totalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-searchQuery="@ViewBag.SearchQuery">Next</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
         </div>
     </div>
 </div>

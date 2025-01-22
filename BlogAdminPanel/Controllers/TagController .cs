@@ -18,48 +18,59 @@ namespace BlogAdminPanel.Controllers
             _mapper = mapper;
         }
 
-        // GET: Tag
-        // GET: Tag
+        // List Tags
         public IActionResult Index()
         {
-            var tags = _context.Tags.Include(t => t.BlogPosts).Where(t => !t.IsDeleted).ToList();
-            var tagDtos = _mapper.Map<List<TagCreateDto>>(tags);
+            var tags = _context.Tags
+                                .Include(c => c.BlogPosts)
+                                .Where(c => !c.IsDeleted)
+                                .ToList(); // Ensure data is fetched
 
-            return View(tags); // Passing the 'tags' list directly (not DTOs) for usage statistics
+
+            return View(tags);
         }
 
-        // GET: Create Tag
+
+
+        // Create Tag
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Create Tag
         [HttpPost]
-        public IActionResult Create(TagCreateDto TagDto)
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(TagCreateDto tagdto)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                try
                 {
-                    var tag = _mapper.Map<Tag>(TagDto);
+                    var tag = _mapper.Map<Tag>(tagdto);
+                    tag.CreatedBy = "Admin";
                     tag.CreatedOn = DateTime.Now;
-
                     _context.Tags.Add(tag);
                     _context.SaveChanges();
+
+                    TempData["SuccessMessage"] = "Category created successfully!";
                     return RedirectToAction("Index");
                 }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while saving the category: " + ex.Message;
+                    TempData["InnerException"] = ex.InnerException?.Message; 
+                }
             }
-            catch (Exception ex)
+            else
             {
-                TempData["ErrorMessage"] = "Error occurred while creating the user: " + ex.Message;
+                TempData["ErrorMessage"] = "Please correct the form errors and try again.";
             }
 
-            return View(TagDto);
-
+            return View(tagdto);  
         }
 
-        // GET: Edit Tag
+
+        // Edit Tag
         public IActionResult Edit(int id)
         {
             var tag = _context.Tags.Find(id);
@@ -72,7 +83,6 @@ namespace BlogAdminPanel.Controllers
             return NotFound();
         }
 
-        // POST: Edit Tag
         [HttpPost]
         public IActionResult Edit(TagUpdateDto tagupdateDto)
         {
@@ -102,6 +112,7 @@ namespace BlogAdminPanel.Controllers
             return View(tagupdateDto);  
         }
 
+        // Delete Tag
         public IActionResult Delete(int id)
         {
             var tag = _context.Tags.Find(id);
@@ -112,5 +123,7 @@ namespace BlogAdminPanel.Controllers
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
+
+
     }
 }

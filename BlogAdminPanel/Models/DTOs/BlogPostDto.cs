@@ -9,7 +9,7 @@ namespace BlogAdminPanel.Models.DTOs
         public string MetaTitle { get; set; }
         public string MetaDescription { get; set; }
         public string Keywords { get; set; }
-        public string Status { get; set; } // Draft, Published, Archived
+        public string Status { get; set; } 
         public bool IsDraft { get; set; } = false;
         public bool IsPublished { get; set; } = false;
         public bool IsArchived { get; set; } = false;
@@ -28,7 +28,7 @@ namespace BlogAdminPanel.Models.DTOs
         public string MetaTitle { get; set; }
         public string MetaDescription { get; set; }
         public string Keywords { get; set; }
-        public string Status { get; set; } // Draft, Published, Archived
+        public string Status { get; set; } 
         public bool IsDraft { get; set; } = false;
         public bool IsPublished { get; set; } = false;
         public bool IsArchived { get; set; } = false;

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BlogAdminPanel.Controllers
 {
@@ -20,53 +21,64 @@ namespace BlogAdminPanel.Controllers
             _mapper = mapper;
         }
 
+        // List Categories
         public IActionResult Index()
         {
-            var categories = _context.Categories.Include(c => c.BlogPosts).Where(c => !c.IsDeleted).ToList();
+            var categories = _context.Categories
+                                .Include(c => c.BlogPosts)
+                                .Where(c => !c.IsDeleted)
+                                .ToList(); // Ensure data is fetched
 
-            var categoryDtos = _mapper.Map<List<CategoryCreateDto>>(categories);
 
-            return View(categories);  
+            return View(categories);
         }
 
 
-
+        // Create Category
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(CategoryCreateDto CategoryDto)
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(CategoryCreateDto categoryDto)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                try
                 {
-                    var category = _mapper.Map<Category>(CategoryDto);
+                    var category = _mapper.Map<Category>(categoryDto);
+                    category.CreatedBy = "Admin";
                     category.CreatedOn = DateTime.Now;
-
                     _context.Categories.Add(category);
                     _context.SaveChanges();
+
+                    TempData["SuccessMessage"] = "Category created successfully!";
                     return RedirectToAction("Index");
                 }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while saving the category: " + ex.Message;
+                    TempData["InnerException"] = ex.InnerException?.Message; // Capture inner exception message
+                }
             }
-            catch (Exception ex)
+            else
             {
-                TempData["ErrorMessage"] = "Error occurred while creating the user: " + ex.Message;
+                TempData["ErrorMessage"] = "Please correct the form errors and try again.";
             }
 
-            return View(CategoryDto);
-
+            return View(categoryDto);
         }
 
+        // Edit Category
         public IActionResult Edit(int id)
         {
             var category = _context.Categories.Find(id);
             if (category != null)
             {
                 var categoryDto = _mapper.Map<CategoryUpdateDto>(category);
-                return View(categoryDto);  
+                return View(categoryDto);
             }
 
             return NotFound();
@@ -98,9 +110,10 @@ namespace BlogAdminPanel.Controllers
                 TempData["ErrorMessage"] = "Error occurred while updating the category: " + ex.Message;
             }
 
-            return View(categoryupdateDto);  
+            return View(categoryupdateDto);
         }
 
+        //Delete Category
         public IActionResult Delete(int id)
         {
             var category = _context.Categories.Find(id);
