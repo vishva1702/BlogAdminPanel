@@ -1,4 +1,4 @@
-﻿namespace BlogAdminPanel.Models
+namespace BlogAdminPanel.Models
 {
     public class User
     {
