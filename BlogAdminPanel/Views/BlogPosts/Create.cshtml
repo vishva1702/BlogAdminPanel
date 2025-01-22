@@ -4,82 +4,218 @@
     ViewData["Title"] = "Create Blog Post";
 }
 
-<h2>Create Blog Post</h2>
+<!-- Google Fonts -->
+<link href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label asp-for="Title"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Content"></label>
-        <textarea asp-for="Content" class="form-control"></textarea>
-        <span asp-validation-for="Content" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="MetaTitle"></label>
-        <input asp-for="MetaTitle" class="form-control" />
-        <span asp-validation-for="MetaTitle" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="MetaDescription"></label>
-        <textarea asp-for="MetaDescription" class="form-control"></textarea>
-        <span asp-validation-for="MetaDescription" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Keywords"></label>
-        <input asp-for="Keywords" class="form-control" />
-        <span asp-validation-for="Keywords" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label for="Status">Status</label>
-        <select asp-for="Status" asp-items="ViewBag.StatusOptions" class="form-control" id="statusDropdown">
-        </select>
-        <span asp-validation-for="Status" class="text-danger"></span>
-    </div>
-    <div class="form-group" id="publishDateGroup" style="display: none;">
-        <label asp-for="PublishDate"></label>
-        <input asp-for="PublishDate" type="datetime-local" class="form-control" />
-        <span asp-validation-for="PublishDate" class="text-danger"></span>
-    </div>
+<!-- Vendor CSS Files -->
+<link href="~/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+<link href="~/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+<link href="~/assets/vendor/quill/quill.snow.css" rel="stylesheet">
+<link href="~/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+<link href="~/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+<link href="~/assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
-    <div class="form-group">
-        <label for="ImageFile">Upload Image</label>
-        <input asp-for="ImageFile" type="file" class="form-control" />
-        <span asp-validation-for="ImageFile" class="text-danger"></span>
-    </div>
+<!-- Template Main CSS File -->
+<link href="~/assets/css/style.css" rel="stylesheet">
 
-    <div class="form-group">
-        <label for="CategoryId">Category</label>
-        <select asp-for="CategoryId" asp-items="ViewBag.CategoryOptions" class="form-control"></select>
-        <span asp-validation-for="CategoryId" class="text-danger"></span>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
     </div>
-    <div class="form-group">
-        <label for="TagId">Tag</label>
-        <select asp-for="TagId" asp-items="ViewBag.TagOptions" class="form-control"></select>
-        <span asp-validation-for="TagId" class="text-danger"></span>
+}
+
+
+<div class="card border-secondary mt-4">
+    <div class="card-header bg-light text-dark">
+        <h5 class="card-title mb-0"><b>Blog Post Details</b></h5>
     </div>
-    <div class="form-group">
-        <label asp-for="CreatedBy"></label>
-        <input asp-for="CreatedBy" class="form-control" />
-        <span asp-validation-for="CreatedBy" class="text-danger"></span>
+    <div class="card-body">
+        <form asp-action="Create" method="post" enctype="multipart/form-data" id="createBlogPostForm" class="row g-3 needs-validation" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Title -->
+            <div class="col-12">
+                <div class="form-floating">
+                    <input asp-for="Title" class="form-control" id="Title" placeholder="Enter Title" required />
+                    <label for="Title">Title</label>
+                    <div class="invalid-feedback">
+                        Please provide a valid title.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meta Title -->
+            <div class="col-12">
+                <div class="form-floating">
+                    <input asp-for="MetaTitle" class="form-control" id="MetaTitle" placeholder="Enter Meta Title" required />
+                    <label for="MetaTitle">Meta Title</label>
+                    <div class="invalid-feedback">
+                        Please provide a valid meta title.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="Content">Content</label>
+                    <div id="quill-editor" class="quill-editor"></div>
+                    <textarea asp-for="Content" class="form-control d-none" id="Content" required></textarea>
+                    <div class="invalid-feedback">
+                        Please provide content for the blog post.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meta Description -->
+            <div class="col-12">
+                <div class="form-floating">
+                    <textarea asp-for="MetaDescription" class="form-control" id="MetaDescription" placeholder="Enter Meta Description" required></textarea>
+                    <label for="MetaDescription">Meta Description</label>
+                    <div class="invalid-feedback">
+                        Please provide a valid meta description.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Keywords -->
+            <div class="col-12">
+                <div class="form-floating">
+                    <input asp-for="Keywords" class="form-control" id="Keywords" placeholder="Enter Keywords (comma-separated)" required />
+                    <label for="Keywords">Keywords</label>
+                    <div class="invalid-feedback">
+                        Please provide valid keywords.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="col-12">
+                <div class="form-floating">
+                    <select asp-for="Status" asp-items="ViewBag.StatusOptions" class="form-select" id="statusDropdown" required>
+                        <option value="" disabled selected>-- Select Status --</option>
+                    </select>
+                    <label for="statusDropdown">Status</label>
+                    <div class="invalid-feedback">
+                        Please select a status.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Publish Date -->
+            <div class="col-12" id="publishDateGroup" style="display: none;">
+                <div class="form-floating">
+                    <input asp-for="PublishDate" type="datetime-local" class="form-control" />
+                    <label for="PublishDate">Publish Date</label>
+                    <div class="invalid-feedback">
+                        Please provide a valid publish date.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="ImageFile">Upload Image</label>
+                    <input asp-for="ImageFile" type="file" class="form-control" required />
+                    <div class="invalid-feedback">
+                        Please upload an image.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category -->
+            <div class="col-12">
+                <div class="form-floating">
+                    <select asp-for="CategoryId" asp-items="ViewBag.CategoryOptions" class="form-select" required></select>
+                    <label for="CategoryId">Category</label>
+                    <div class="invalid-feedback">
+                        Please select a category.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tag -->
+            <div class="col-12">
+                <div class="form-floating">
+                    <select asp-for="TagId" asp-items="ViewBag.TagOptions" class="form-select" required></select>
+                    <label for="TagId">Tag</label>
+                    <div class="invalid-feedback">
+                        Please select a tag.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Create Blog Post</button>
+                <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+        </form>
+
+
     </div>
-    <button type="submit" class="btn btn-success">Create</button>
-</form>
+</div>
+
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+
+<!-- Include Quill JS -->
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Vendor JS Files -->
+<script src="~/assets/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="~/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/vendor/chart.js/chart.umd.js"></script>
+<script src="~/assets/vendor/echarts/echarts.min.js"></script>
+<script src="~/assets/vendor/quill/quill.js"></script>
+<script src="~/assets/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="~/assets/vendor/tinymce/tinymce.min.js"></script>
+<script src="~/assets/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="~/assets/js/main.js"></script>
 
 @section Scripts {
     <script>
-        document.getElementById("statusDropdown").addEventListener("change", function () {
-            const publishDateGroup = document.getElementById("publishDateGroup");
-            if (this.value === "Published") {
-                publishDateGroup.style.display = "block";
-            } else {
-                publishDateGroup.style.display = "none";
-                document.querySelector('[name="PublishDate"]').value = "";
-            }
-        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const quill = new Quill('#quill-editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{ 'font': [] }],
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        [{ 'indent': '-1' }, { 'indent': '+1' }],
+                        ['link', 'image', 'video'],
+                        ['clean']
+                    ]
+                }
+            });
 
-        document.getElementById("statusDropdown").dispatchEvent(new Event("change"));
+            document.getElementById("createBlogPostForm").addEventListener("submit", function () {
+                document.getElementById("Content").value = quill.root.innerHTML;
+            });
+
+            document.getElementById("statusDropdown").addEventListener("change", function () {
+                const publishDateGroup = document.getElementById("publishDateGroup");
+                if (this.value === "Published") {
+                    publishDateGroup.style.display = "block";
+                } else {
+                    publishDateGroup.style.display = "none";
+                    document.querySelector('[name="PublishDate"]').value = "";
+                }
+            });
+
+            document.getElementById("statusDropdown").dispatchEvent(new Event("change"));
+        });
     </script>
+
+    @Html.Partial("_ValidationScriptsPartial")
 }

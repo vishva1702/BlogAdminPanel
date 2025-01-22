@@ -1,141 +1,67 @@
-﻿@{
-    ViewData["Title"] = "Dashboard";
+﻿@model IEnumerable<BlogPost>
+
+@{
+    ViewBag.Title = "Blog Posts";
 }
 
-<h1>Admin Panel Dashboard</h1>
-<div class="row">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">Blog Performance Metrics</div>
-            <div class="card-body">
-                <p>Total Views: @ViewBag.TotalViews</p>
-                <p>Total Likes: @ViewBag.TotalLikes</p>
-                <p>Total Shares: @ViewBag.TotalShares</p>
-            </div>
-        </div>
-    </div>
+<h1>Blog Posts</h1>
 
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">Post Engagement (Individual)</div>
-            <div class="card-body">
-                <table class="table table-striped">
-                    <thead>
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Blog Posts Details</h5>
+
+            <p>
+                <a asp-action="Create" class="btn btn-success mb-3">Create Posts</a>
+                <a asp-action="Draft" class="btn btn-primary mb-3">View Draft Posts</a>
+                <a asp-action="Archive" class="btn btn-success mb-3">View Archived Posts</a>
+            </p>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Category</th>
+                        <th>Tags</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
                         <tr>
-                            <th>Title</th>
-                            <th>Views</th>
-                            <th>Likes</th>
-                            <th>Shares</th>
+                            <td colspan="5" class="text-center">No blog posts found.</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var post in ViewBag.PostEngagement)
+                    }
+                    else
+                    {
+                        @foreach (var post in Model)
                         {
                             <tr>
                                 <td>@post.Title</td>
-                                <td>@post.Views</td>
-                                <td>@post.Likes</td>
-                                <td>@post.Shares</td>
+                                <td>@post.Status</td>
+                                <td>@post.Category?.Name</td>
+                                <td>@post.Tag?.Name</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@post.Id" class="btn btn-primary btn-sm">Edit</a>
+                                    <form asp-action="Archive" asp-route-id="@post.Id" method="post" style="display:inline-block;">
+                                        <button type="submit" class="btn btn-warning btn-sm">Archive</button>
+                                    </form>
+                                    <form asp-action="Delete" asp-route-id="@post.Id" method="post" style="display:inline-block;">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                    @if (post.Status == "Published")
+                                    {
+                                        <a asp-action="Publish" asp-route-id="@post.Id" class="btn btn-success btn-sm">View Published</a>
+                                    }
+                                </td>
                             </tr>
                         }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-
-<div class="row">
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">Blog Posts</div>
-            <div class="card-body">
-                <p>Total Posts: @ViewBag.TotalPosts</p>
-                <p>Published Posts: @ViewBag.PublishedPosts</p>
-                <p>Draft Posts: @ViewBag.DraftPosts</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">Categories and Tags</div>
-            <div class="card-body">
-                <p>Total Categories: @ViewBag.TotalCategories</p>
-                <p>Total Tags: @ViewBag.TotalTags</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">Users</div>
-            <div class="card-body">
-                <p>Total Users: @ViewBag.TotalUsers</p>
-                <p>Active Users: @ViewBag.ActiveUsers</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4 mt-4">
-        <div class="card">
-            <div class="card-header">Comments</div>
-            <div class="card-body">
-                <p>Pending Comments: @ViewBag.PendingComments</p>
-                <p>Approved Comments: @ViewBag.ApprovedComments</p>
-            </div>
-        </div>
-    </div>
-   <div class="row mt-4">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">Blog Post Metrics</div>
-            <div class="card-body">
-                <canvas id="blogPostMetricsChart" style="max-width: 300px; max-height: 150px;"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-@section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var ctx = document.getElementById('blogPostMetricsChart').getContext('2d');
-            var chart = new Chart(ctx, {
-                type: 'pie', // Change to 'pie'
-                data: {
-                    labels: ['Total Likes', 'Total Views', 'Total Shares'],
-                    datasets: [{
-                        label: 'Blog Post Metrics',
-                        data: [@ViewBag.TotalLikes, @ViewBag.TotalViews, @ViewBag.TotalShares],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.6)', // Red
-                            'rgba(54, 162, 235, 0.6)', // Blue
-                            'rgba(75, 192, 192, 0.6)'  // Green
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)', // Red border
-                            'rgba(54, 162, 235, 1)', // Blue border
-                            'rgba(75, 192, 192, 1)'  // Green border
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top' // Place legend at the top
-                        },
-                        tooltip: {
-                            enabled: true // Enable tooltips for pie chart
-                        }
                     }
-                }
-            });
-        });
-    </script>
-}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

@@ -13,7 +13,6 @@ namespace BlogAdminPanel.Models.DTOs
         public bool IsDraft { get; set; } = false;
         public bool IsPublished { get; set; } = false;
         public bool IsArchived { get; set; } = false;
-        public string CreatedBy { get; set; }
         public int CategoryId { get; set; }
         public int TagId { get; set; }
         public IFormFile ImageFile { get; set; }

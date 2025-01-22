@@ -20,8 +20,8 @@ namespace BlogAdminPanel.Controllers
         }
 
 
+        //index
 
-        // Index
         public IActionResult Index()
         {
             var posts = _context.BlogPosts
@@ -50,10 +50,6 @@ namespace BlogAdminPanel.Controllers
             return View(posts);
         }
 
-
-
-
-
         // Create
         public IActionResult Create()
         {
@@ -67,64 +63,100 @@ namespace BlogAdminPanel.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(BlogPostCreateDto dto)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                ViewBag.StatusOptions = GetStatusDropdown();
-                ViewBag.CategoryOptions = new SelectList(_context.Categories, "Id", "Name");
-                ViewBag.TagOptions = new SelectList(_context.Tags, "Id", "Name");
-                return View(dto);
-            }
-
-            string imagePath = null;
-
-            if (dto.ImageFile != null && dto.ImageFile.Length > 0)
-            {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-                if (!Directory.Exists(uploadsFolder))
+                // Check if the model state is valid
+                if (!ModelState.IsValid)
                 {
-                    Directory.CreateDirectory(uploadsFolder);
+                    // Repopulate the dropdowns in case of errors
+                    ViewBag.StatusOptions = GetStatusDropdown();
+                    ViewBag.CategoryOptions = new SelectList(_context.Categories, "Id", "Name");
+                    ViewBag.TagOptions = new SelectList(_context.Tags, "Id", "Name");
+                    return View(dto); // Return the same view with the validation errors
                 }
 
-                var uniqueFileName = Guid.NewGuid().ToString() + "_" + dto.ImageFile.FileName;
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+
+                string imagePath = null;
+
+                // Handle file upload
+                if (dto.ImageFile != null && dto.ImageFile.Length > 0)
                 {
-                    dto.ImageFile.CopyTo(fileStream);
+                    try
+                    {
+                        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                        if (!Directory.Exists(uploadsFolder))
+                        {
+                            Directory.CreateDirectory(uploadsFolder);
+                        }
+
+                        var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(dto.ImageFile.FileName);
+                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            dto.ImageFile.CopyTo(fileStream);
+                        }
+
+                        imagePath = "/images/" + uniqueFileName;
+                    }
+                    catch (Exception ex)
+                    {
+                        TempData["ErrorMessage"] = "An error occurred while saving the image: " + ex.Message;
+                        return View(dto); // Return to the view with error message
+                    }
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Please upload an image.";
+                    return View(dto); // Return to the view with error message
                 }
 
-                imagePath = "/images/" + uniqueFileName;
+                // Create a new BlogPost object
+                var blogPost = new BlogPost
+                {
+                    Title = dto.Title,
+                    Content = dto.Content,
+                    MetaTitle = dto.MetaTitle,
+                    MetaDescription = dto.MetaDescription,
+                    Keywords = dto.Keywords,
+                    Status = dto.Status,
+                    CreatedBy = "admin",
+                    CreatedDate = DateTime.Now,
+                    CategoryId = dto.CategoryId,
+                    TagId = dto.TagId,
+                    Image = imagePath,
+                    IsDraft = dto.Status == "Draft",
+                    IsPublished = dto.Status == "Published",
+                    IsArchived = dto.Status == "Archived",
+                    PublishedDate = dto.Status == "Published" ? dto.PublishDate : (DateTime?)null
+                };
+
+                // Adjust status for future publish dates
+                if (blogPost.PublishedDate.HasValue && blogPost.PublishedDate > DateTime.Now)
+                {
+                    blogPost.Status = "Upcoming";
+                }
+
+                // Save to database
+                try
+                {
+                    _context.BlogPosts.Add(blogPost);
+                    _context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while saving the blog post: " + ex.Message;
+                    return View(dto); // Return to the view with error message
+                }
+
+                
             }
-
-            var blogPost = new BlogPost
+            catch (Exception ex)
             {
-                Title = dto.Title,
-                Content = dto.Content,
-                MetaTitle = dto.MetaTitle,
-                MetaDescription = dto.MetaDescription,
-                Keywords = dto.Keywords,
-                Status = dto.Status,
-                CreatedBy = dto.CreatedBy,
-                CreatedDate = DateTime.Now,
-                CategoryId = dto.CategoryId,
-                TagId = dto.TagId,
-                Image = imagePath,
-                IsDraft = dto.Status == "Draft",
-                IsPublished = dto.Status == "Published",
-                IsArchived = dto.Status == "Archived",
-                PublishedDate = dto.Status == "Published" ? dto.PublishDate : (DateTime?)null 
-            };
-
-            if (blogPost.PublishedDate.HasValue && blogPost.PublishedDate > DateTime.Now)
-            {
-                blogPost.Status = "Upcoming"; 
+                TempData["ErrorMessage"] = "An error occurred while saving the category: " + ex.Message;
+                TempData["InnerException"] = ex.InnerException?.Message; // Capture inner exception message
             }
-
-            _context.BlogPosts.Add(blogPost);
-            _context.SaveChanges();
-
             return RedirectToAction(nameof(Index));
         }
-
 
 
         // Edit
@@ -172,7 +204,7 @@ namespace BlogAdminPanel.Controllers
             if (blogPost == null)
                 return NotFound();
 
-            string imagePath = blogPost.Image; 
+            string imagePath = blogPost.Image;
 
             if (dto.ImageFile != null && dto.ImageFile.Length > 0)
             {
@@ -221,6 +253,7 @@ namespace BlogAdminPanel.Controllers
 
 
         // Delete
+        [HttpPost]
         public IActionResult Delete(int id)
         {
             var blogpost = _context.BlogPosts.Find(id);
@@ -232,8 +265,7 @@ namespace BlogAdminPanel.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
-        // Archive
+        // Archive - GET
         public IActionResult Archive()
         {
             var archivedPosts = _context.BlogPosts
@@ -245,7 +277,7 @@ namespace BlogAdminPanel.Controllers
             return View(archivedPosts);
         }
 
-
+        // Archive - POST (Optional if triggered elsewhere)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Archive(int id)
@@ -266,7 +298,6 @@ namespace BlogAdminPanel.Controllers
 
 
 
-        // UnArchive
         public IActionResult UnArchive(int id)
         {
             var blogPost = _context.BlogPosts.FirstOrDefault(bp => bp.Id == id);
@@ -274,9 +305,10 @@ namespace BlogAdminPanel.Controllers
             if (blogPost == null)
                 return NotFound();
 
-            return View(blogPost); 
+            return View(blogPost);
         }
 
+        // UnArchive - POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult UnArchiveConfirmed(int id)
@@ -286,21 +318,24 @@ namespace BlogAdminPanel.Controllers
             if (blogPost == null)
                 return NotFound();
 
-            blogPost.Status = "Published"; 
+            blogPost.Status = "Published";
             blogPost.IsArchived = false;
             blogPost.IsPublished = true;
 
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(Index)); 
+            return RedirectToAction(nameof(Archive)); // Redirect to Archive view
         }
 
 
 
-        // Publish
+        // Publish code
         public IActionResult Publish(int id)
         {
-            var blogPost = _context.BlogPosts.FirstOrDefault(bp => bp.Id == id && bp.Status == "Published");
+            var blogPost = _context.BlogPosts
+                                   .Include(bp => bp.Category)
+                                   .Include(bp => bp.Tag)
+                                   .FirstOrDefault(bp => bp.Id == id && bp.Status == "Published");
 
             if (blogPost == null)
                 return NotFound();
@@ -316,7 +351,7 @@ namespace BlogAdminPanel.Controllers
             var draftPosts = _context.BlogPosts
                                      .Where(bp => bp.Status == "Draft" && !bp.IsDeleted)
                                      .Include(bp => bp.Category) 
-                                     .Include(bp => bp.Tag) 
+                                     .Include(bp => bp.Tag)      
                                      .ToList();
 
             return View(draftPosts);
@@ -346,7 +381,7 @@ namespace BlogAdminPanel.Controllers
         }
 
 
-        // Dropdown : draft,publish,archived
+        // Dropdown => draft,publish,archived
         private SelectList GetStatusDropdown()
         {
             var statuses = new[]
