@@ -12,6 +12,7 @@ namespace BlogAdminPanel.Models
         public string PasswordHash { get; set; }
         public string Role { get; set; }
         public bool IsActive { get; set; }
+        public string Image { get; set; }
 
         // Audit Columns
         public DateTime CreatedOn { get; set; } = DateTime.Now;

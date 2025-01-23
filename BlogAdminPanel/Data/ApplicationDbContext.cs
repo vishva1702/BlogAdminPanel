@@ -36,6 +36,7 @@ namespace BlogAdminPanel.Data
                 PasswordHash = new PasswordHasher<User>().HashPassword(null, "Admin@123"), // Replace with a strong password
                 Role = "Admin",
                 IsActive = true,
+                Image = "/images/logo.png",
                 CreatedOn = DateTime.Now,
                 CreatedBy = "System",
                 UpdatedOn = null,
@@ -50,7 +51,7 @@ namespace BlogAdminPanel.Data
                 Id = 1,
                 SiteName = "Default Blog",
                 Tagline = "Welcome to Default Blog",
-                Logo = "/images/default-logo.png", // Default logo path
+                Logo = "/images/logo.png",
                 ContactEmail = "info@defaultblog.com",
                 ContactPhone = "123-456-7890",
                 SocialLinks = "facebook.com/defaultblog, twitter.com/defaultblog",

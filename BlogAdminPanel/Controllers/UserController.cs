@@ -42,12 +42,28 @@ namespace BlogAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     var user = _mapper.Map<User>(userDto);
-                    user.PasswordHash = _passwordHasher.HashPassword(user, userDto.Role); // Replace Role with actual password
+
+                    user.PasswordHash = _passwordHasher.HashPassword(user, userDto.PasswordHash);
+
+                    if (userDto.Image != null && userDto.Image.Length > 0)
+                    {
+                        var imagePath = Path.Combine("wwwroot", "images", userDto.Image.FileName);
+
+                        using (var stream = new FileStream(imagePath, FileMode.Create))
+                        {
+                            userDto.Image.CopyTo(stream);
+                        }
+
+                        user.Image = $"/images/{userDto.Image.FileName}";
+                    }
+
                     user.CreatedBy = "Admin";
                     user.CreatedOn = DateTime.Now;
 
+                    // Save to the database
                     _context.Users.Add(user);
                     _context.SaveChanges();
+
                     return RedirectToAction("Index");
                 }
             }
@@ -57,8 +73,9 @@ namespace BlogAdminPanel.Controllers
             }
 
             return View(userDto);
-
         }
+
+
 
         public IActionResult Edit(int id)
         {

@@ -12,7 +12,8 @@ namespace BlogAdminPanel.Models.DTOs
         public string PasswordHash { get; set; }
         public string Role { get; set; } 
         public bool IsActive { get; set; }
-        
+        public IFormFile Image { get; set; }
+
     }
 
     public class UserUpdateDto

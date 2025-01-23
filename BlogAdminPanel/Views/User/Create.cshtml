@@ -27,7 +27,7 @@
             <h5 class="card-title mb-0">User Details</h5>
         </div>
         <div class="card-body">
-            <form asp-action="Create" method="post" class="row g-3 needs-validation" novalidate>
+            <form asp-action="Create" method="post" enctype="multipart/form-data" class="row g-3 needs-validation" novalidate>
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <!-- Floating Labels Form -->
@@ -88,6 +88,18 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input asp-for="Image" class="form-control" id="floatingImage" type="file" accept="image/*" />
+                        <label for="floatingImage">Upload Image</label>
+                        <div class="invalid-feedback">
+                            Please upload a valid image.
+                        </div>
+                    </div>
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
+
 
                 <!-- Buttons -->
                 <div class="text-center">

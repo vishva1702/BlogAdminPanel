@@ -251,8 +251,8 @@ namespace BlogAdminPanel.Migrations
                             ContactEmail = "info@defaultblog.com",
                             ContactPhone = "123-456-7890",
                             CreatedBy = "System",
-                            CreatedOn = new DateTime(2025, 1, 23, 10, 3, 23, 22, DateTimeKind.Local).AddTicks(4191),
-                            Logo = "/images/default-logo.png",
+                            CreatedOn = new DateTime(2025, 1, 23, 11, 40, 19, 983, DateTimeKind.Local).AddTicks(9306),
+                            Logo = "/images/logo.png",
                             SiteName = "Default Blog",
                             SocialLinks = "facebook.com/defaultblog, twitter.com/defaultblog",
                             Tagline = "Welcome to Default Blog"
@@ -311,6 +311,10 @@ namespace BlogAdminPanel.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -344,11 +348,12 @@ namespace BlogAdminPanel.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            CreatedOn = new DateTime(2025, 1, 23, 10, 3, 23, 22, DateTimeKind.Local).AddTicks(3779),
+                            CreatedOn = new DateTime(2025, 1, 23, 11, 40, 19, 983, DateTimeKind.Local).AddTicks(8772),
                             Email = "admin@blog.com",
+                            Image = "/images/logo.png",
                             IsActive = true,
                             IsDeleted = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEId+3ZBcqiOOdI6U9L0xrO3ASPlVVpvc/Yuf6hAp6SHDgtDP4Lr98pVIhGRrpHlqbQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI87QaR6fJ4/Ty1GuO1Lo9cskk9OGLUwBnzxW0DbaxenLxLGb+T3/DICzziu7netlA==",
                             Role = "Admin",
                             UserName = "Admin"
                         });

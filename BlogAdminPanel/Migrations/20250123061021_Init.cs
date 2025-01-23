@@ -80,6 +80,7 @@ namespace BlogAdminPanel.Migrations
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -168,12 +169,12 @@ namespace BlogAdminPanel.Migrations
             migrationBuilder.InsertData(
                 table: "SiteSettings",
                 columns: new[] { "Id", "ContactEmail", "ContactPhone", "CreatedBy", "CreatedOn", "Logo", "SiteName", "SocialLinks", "Tagline", "UpdatedBy", "UpdatedOn" },
-                values: new object[] { 1, "info@defaultblog.com", "123-456-7890", "System", new DateTime(2025, 1, 23, 10, 3, 23, 22, DateTimeKind.Local).AddTicks(4191), "/images/default-logo.png", "Default Blog", "facebook.com/defaultblog, twitter.com/defaultblog", "Welcome to Default Blog", null, null });
+                values: new object[] { 1, "info@defaultblog.com", "123-456-7890", "System", new DateTime(2025, 1, 23, 11, 40, 19, 983, DateTimeKind.Local).AddTicks(9306), "/images/logo.png", "Default Blog", "facebook.com/defaultblog, twitter.com/defaultblog", "Welcome to Default Blog", null, null });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "CreatedBy", "CreatedOn", "Email", "IsActive", "IsDeleted", "PasswordHash", "Role", "UpdatedBy", "UpdatedOn", "UserName" },
-                values: new object[] { 1, "System", new DateTime(2025, 1, 23, 10, 3, 23, 22, DateTimeKind.Local).AddTicks(3779), "admin@blog.com", true, false, "AQAAAAIAAYagAAAAEId+3ZBcqiOOdI6U9L0xrO3ASPlVVpvc/Yuf6hAp6SHDgtDP4Lr98pVIhGRrpHlqbQ==", "Admin", null, null, "Admin" });
+                columns: new[] { "Id", "CreatedBy", "CreatedOn", "Email", "Image", "IsActive", "IsDeleted", "PasswordHash", "Role", "UpdatedBy", "UpdatedOn", "UserName" },
+                values: new object[] { 1, "System", new DateTime(2025, 1, 23, 11, 40, 19, 983, DateTimeKind.Local).AddTicks(8772), "admin@blog.com", "/images/logo.png", true, false, "AQAAAAIAAYagAAAAEI87QaR6fJ4/Ty1GuO1Lo9cskk9OGLUwBnzxW0DbaxenLxLGb+T3/DICzziu7netlA==", "Admin", null, null, "Admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_BlogPosts_CategoryId",

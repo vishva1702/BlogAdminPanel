@@ -61,7 +61,7 @@ namespace BlogAdminPanel.Controllers
                         var fileName = Path.GetFileNameWithoutExtension(model.LogoFile.FileName);
                         var extension = Path.GetExtension(model.LogoFile.FileName);
                         var uniqueFileName = $"{fileName}_{Guid.NewGuid()}{extension}";
-                        var filePath = Path.Combine("wwwroot/img", uniqueFileName);
+                        var filePath = Path.Combine("wwwroot/images", uniqueFileName);
 
                         // Debugging: Check if file is being uploaded correctly
                         Console.WriteLine($"Uploading file: {filePath}");
@@ -71,7 +71,7 @@ namespace BlogAdminPanel.Controllers
                             model.LogoFile.CopyTo(stream);
                         }
 
-                        settings.Logo = $"/img/{uniqueFileName}";
+                        settings.Logo = $"/images/{uniqueFileName}";
 
                         TempData["SuccessMessage"] = "Logo updated successfully!";
 
