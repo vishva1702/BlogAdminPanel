@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BlogAdminPanel.Models
+﻿namespace BlogAdminPanel.Models
 {
     public class Category
     {
