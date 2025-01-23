@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogAdminPanel.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250116064055_Init")]
+    [Migration("20250123043323_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -33,6 +33,9 @@ namespace BlogAdminPanel.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -47,12 +50,28 @@ namespace BlogAdminPanel.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPublished")
                         .HasColumnType("bit");
 
                     b.Property<string>("Keywords")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Likes")
+                        .HasColumnType("int");
 
                     b.Property<string>("MetaDescription")
                         .IsRequired()
@@ -65,22 +84,34 @@ namespace BlogAdminPanel.Migrations
                     b.Property<DateTime?>("PublishedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Shares")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Views")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("TagId");
 
                     b.ToTable("BlogPosts");
                 });
@@ -97,7 +128,7 @@ namespace BlogAdminPanel.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedOn")
+                    b.Property<DateTime?>("CreatedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
@@ -108,7 +139,6 @@ namespace BlogAdminPanel.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedOn")
@@ -168,69 +198,6 @@ namespace BlogAdminPanel.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("BlogAdminPanel.Models.DTOs.UserCreateDto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserCreateDto");
-                });
-
-            modelBuilder.Entity("BlogAdminPanel.Models.DTOs.UserUpdateDto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserUpdateDto");
-                });
-
             modelBuilder.Entity("BlogAdminPanel.Models.SiteSettings", b =>
                 {
                     b.Property<int>("Id")
@@ -287,7 +254,7 @@ namespace BlogAdminPanel.Migrations
                             ContactEmail = "info@defaultblog.com",
                             ContactPhone = "123-456-7890",
                             CreatedBy = "System",
-                            CreatedOn = new DateTime(2025, 1, 16, 12, 10, 53, 944, DateTimeKind.Local).AddTicks(3782),
+                            CreatedOn = new DateTime(2025, 1, 23, 10, 3, 23, 22, DateTimeKind.Local).AddTicks(4191),
                             Logo = "/images/default-logo.png",
                             SiteName = "Default Blog",
                             SocialLinks = "facebook.com/defaultblog, twitter.com/defaultblog",
@@ -318,7 +285,6 @@ namespace BlogAdminPanel.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedOn")
@@ -381,14 +347,33 @@ namespace BlogAdminPanel.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            CreatedOn = new DateTime(2025, 1, 16, 12, 10, 53, 944, DateTimeKind.Local).AddTicks(2805),
+                            CreatedOn = new DateTime(2025, 1, 23, 10, 3, 23, 22, DateTimeKind.Local).AddTicks(3779),
                             Email = "admin@blog.com",
                             IsActive = true,
                             IsDeleted = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEEIMUynCAhfm2kLviTFKtOgcZw6zVd26dAeh6bvWGGwOsk6Fqb9WoF8UG5zmo22aow==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEId+3ZBcqiOOdI6U9L0xrO3ASPlVVpvc/Yuf6hAp6SHDgtDP4Lr98pVIhGRrpHlqbQ==",
                             Role = "Admin",
                             UserName = "Admin"
                         });
+                });
+
+            modelBuilder.Entity("BlogAdminPanel.Models.BlogPost", b =>
+                {
+                    b.HasOne("BlogAdminPanel.Models.Category", "Category")
+                        .WithMany("BlogPosts")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BlogAdminPanel.Models.Tag", "Tag")
+                        .WithMany("BlogPosts")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("BlogAdminPanel.Models.Comment", b =>
@@ -405,6 +390,16 @@ namespace BlogAdminPanel.Migrations
             modelBuilder.Entity("BlogAdminPanel.Models.BlogPost", b =>
                 {
                     b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("BlogAdminPanel.Models.Category", b =>
+                {
+                    b.Navigation("BlogPosts");
+                });
+
+            modelBuilder.Entity("BlogAdminPanel.Models.Tag", b =>
+                {
+                    b.Navigation("BlogPosts");
                 });
 #pragma warning restore 612, 618
         }

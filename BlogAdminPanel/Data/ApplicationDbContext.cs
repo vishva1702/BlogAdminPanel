@@ -60,7 +60,6 @@ namespace BlogAdminPanel.Data
 
             modelBuilder.Entity<SiteSettings>().HasData(defaultSettings);
         }
-        public DbSet<BlogAdminPanel.Models.DTOs.UserCreateDto> UserCreateDto { get; set; } = default!;
-        public DbSet<BlogAdminPanel.Models.DTOs.UserUpdateDto> UserUpdateDto { get; set; } = default!;
+       
     }
 }

@@ -12,41 +12,16 @@ namespace BlogAdminPanel.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "BlogPosts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MetaTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MetaDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Keywords = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PublishedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BlogPosts", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -86,29 +61,12 @@ namespace BlogAdminPanel.Migrations
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tags", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserCreateDto",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserCreateDto", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -134,20 +92,49 @@ namespace BlogAdminPanel.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserUpdateDto",
+                name: "BlogPosts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MetaTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MetaDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Keywords = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDraft = table.Column<bool>(type: "bit", nullable: false),
+                    IsPublished = table.Column<bool>(type: "bit", nullable: false),
+                    IsArchived = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PublishedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    TagId = table.Column<int>(type: "int", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Views = table.Column<int>(type: "int", nullable: false),
+                    Likes = table.Column<int>(type: "int", nullable: false),
+                    Shares = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserUpdateDto", x => x.Id);
+                    table.PrimaryKey("PK_BlogPosts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BlogPosts_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BlogPosts_Tags_TagId",
+                        column: x => x.TagId,
+                        principalTable: "Tags",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -181,12 +168,22 @@ namespace BlogAdminPanel.Migrations
             migrationBuilder.InsertData(
                 table: "SiteSettings",
                 columns: new[] { "Id", "ContactEmail", "ContactPhone", "CreatedBy", "CreatedOn", "Logo", "SiteName", "SocialLinks", "Tagline", "UpdatedBy", "UpdatedOn" },
-                values: new object[] { 1, "info@defaultblog.com", "123-456-7890", "System", new DateTime(2025, 1, 16, 12, 10, 53, 944, DateTimeKind.Local).AddTicks(3782), "/images/default-logo.png", "Default Blog", "facebook.com/defaultblog, twitter.com/defaultblog", "Welcome to Default Blog", null, null });
+                values: new object[] { 1, "info@defaultblog.com", "123-456-7890", "System", new DateTime(2025, 1, 23, 10, 3, 23, 22, DateTimeKind.Local).AddTicks(4191), "/images/default-logo.png", "Default Blog", "facebook.com/defaultblog, twitter.com/defaultblog", "Welcome to Default Blog", null, null });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "Email", "IsActive", "IsDeleted", "PasswordHash", "Role", "UpdatedBy", "UpdatedOn", "UserName" },
-                values: new object[] { 1, "System", new DateTime(2025, 1, 16, 12, 10, 53, 944, DateTimeKind.Local).AddTicks(2805), "admin@blog.com", true, false, "AQAAAAIAAYagAAAAEEIMUynCAhfm2kLviTFKtOgcZw6zVd26dAeh6bvWGGwOsk6Fqb9WoF8UG5zmo22aow==", "Admin", null, null, "Admin" });
+                values: new object[] { 1, "System", new DateTime(2025, 1, 23, 10, 3, 23, 22, DateTimeKind.Local).AddTicks(3779), "admin@blog.com", true, false, "AQAAAAIAAYagAAAAEId+3ZBcqiOOdI6U9L0xrO3ASPlVVpvc/Yuf6hAp6SHDgtDP4Lr98pVIhGRrpHlqbQ==", "Admin", null, null, "Admin" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BlogPosts_CategoryId",
+                table: "BlogPosts",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BlogPosts_TagId",
+                table: "BlogPosts",
+                column: "TagId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_BlogPostId",
@@ -198,28 +195,22 @@ namespace BlogAdminPanel.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Categories");
-
-            migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "SiteSettings");
 
             migrationBuilder.DropTable(
-                name: "Tags");
-
-            migrationBuilder.DropTable(
-                name: "UserCreateDto");
-
-            migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "UserUpdateDto");
+                name: "BlogPosts");
 
             migrationBuilder.DropTable(
-                name: "BlogPosts");
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Tags");
         }
     }
 }

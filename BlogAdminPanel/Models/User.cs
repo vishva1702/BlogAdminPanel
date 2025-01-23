@@ -5,11 +5,12 @@ namespace BlogAdminPanel.Models
 {
     public class User
     {
-        public int Id { get; set; } // Use your own Id type (e.g., int)
+        public int Id { get; set; } 
         public string UserName { get; set; }
         public string Email { get; set; }
+        [PasswordValidation]
         public string PasswordHash { get; set; }
-        public string Role { get; set; } // Admin, Editor, etc.
+        public string Role { get; set; }
         public bool IsActive { get; set; }
 
         // Audit Columns
