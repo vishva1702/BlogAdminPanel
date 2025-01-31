@@ -1,4 +1,4 @@
-﻿using BlogAdminPanel.Validation;
+using BlogAdminPanel.Validation;
 
 namespace BlogAdminPanel.Models
 {

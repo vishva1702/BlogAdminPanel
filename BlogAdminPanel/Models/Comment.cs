@@ -16,6 +16,5 @@ namespace BlogAdminPanel.Models
         public string UpdatedBy { get; set; }
         public bool IsDeleted { get; set; } = false;
         public BlogPost BlogPost { get; set; }
-
     }
 }
