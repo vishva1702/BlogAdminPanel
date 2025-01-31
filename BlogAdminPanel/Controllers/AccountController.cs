@@ -1,102 +1,103 @@
-﻿using BlogAdminPanel.ViewModels;
-using Microsoft.AspNetCore.Authorization;
+﻿using BlogAdminPanel.Models;
+using BlogAdminPanel.ViewModels;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using BlogAdminPanel.Data;
+using Microsoft.AspNetCore.Authorization;
+using System.Net.Mail;
+using System.Net;
 
 namespace BlogAdminPanel.Controllers
 {
-    [AllowAnonymous]
     public class AccountController : Controller
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly PasswordHasher<User> _passwordHasher;
 
-        public AccountController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+
+        public AccountController(ApplicationDbContext context, IConfiguration configuration)
         {
-            _signInManager = signInManager;
-            _userManager = userManager;
+            _context = context;
             _configuration = configuration;
-            _httpContextAccessor = httpContextAccessor;
+            _passwordHasher = new PasswordHasher<User>();
+
         }
 
         [HttpGet]
-       
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = null)
         {
-            // Add a log to confirm that the user is trying to access the login page
-            Console.WriteLine("Redirecting to Login page");
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                ViewData["ReturnUrl"] = returnUrl;
+            }
+            else
+            {
+                ViewData["ReturnUrl"] = "/";
+            }
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(model);
-            }
+                var user = _context.Users.FirstOrDefault(u => u.Email == model.Email && !u.IsDeleted);
 
-            var user = await _userManager.FindByEmailAsync(model.Email.Trim().ToLower());
-            if (user == null)
-            {
-                ModelState.AddModelError(string.Empty, "Invalid email or password.");
-                return View(model);
-            }
-
-            var result = await _signInManager.PasswordSignInAsync(user, model.Password, isPersistent: false, lockoutOnFailure: true);
-
-            if (result.Succeeded)
-            {
-                // Generate JWT token
-                var token = GenerateJwtToken(user);
-
-                // Store the token in a cookie
-                SetJwtTokenInCookie(token);
-
-                // Redirect to returnUrl or default to Home page
-                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                if (user != null)
                 {
-                    return Redirect(returnUrl);
+                    var passwordHasher = new PasswordHasher<User>();
+                    var result = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Password);
+
+                    if (result == PasswordVerificationResult.Success)
+                    {
+                        var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name, user.UserName),
+                            new Claim(ClaimTypes.Email, user.Email),
+                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                            new Claim("ProfilePicture", user.Image ?? "~/assets/img/default-profile.jpg"),
+                            new Claim(ClaimTypes.Role, user.Role)
+                        };
+
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+
+                        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                        {
+                            return Redirect(returnUrl);
+                        }
+
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
 
-                return RedirectToAction("Index", "Home");
-            }
-
-            if (result.IsLockedOut)
-            {
-                ModelState.AddModelError(string.Empty, "This account is locked out. Please try again later.");
-            }
-            else
-            {
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             }
 
             return View(model);
         }
 
-
-
-
-        // Generate JWT token
-        private string GenerateJwtToken(IdentityUser user)
+        private string GenerateJwtToken(User user)
         {
-            var userRoles = _userManager.GetRolesAsync(user).Result;
-
-            var claims = new List<Claim>
-    {
-        new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim(ClaimTypes.NameIdentifier, user.Id)
-    };
-
-            // Add roles as claims
-            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -105,41 +106,168 @@ namespace BlogAdminPanel.Controllers
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.Now.AddMinutes(60),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-
-        // Set JWT token in the cookie
-        private void SetJwtTokenInCookie(string token)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout(string returnUrl = null)
         {
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,  // Set to true in production for HTTPS
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.Now.AddHours(1)  // Set expiration
-            };
+            // Sign out the user by removing the authentication cookie
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            Response.Cookies.Append("JwtToken", token, cookieOptions);
+            // Remove the authentication token from cookies
+            Response.Cookies.Delete("AuthToken");
+
+            // Redirect to the returnUrl or the home page if no returnUrl is provided
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult VerifyEmail()
+        {
+            return View(new VerifyEmailViewModel());
+        }
+
+        [HttpPost]
+        public IActionResult SendOTP(VerifyEmailViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("VerifyEmail", model);
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Email address not found.");
+                return View("VerifyEmail", model);
+            }
+
+            // Generate OTP
+            var otp = new Random().Next(100000, 999999).ToString();
+            TempData["OTP"] = otp;
+            TempData["Email"] = model.Email;
+
+            // Send OTP via email
+            try
+            {
+                SendEmail(model.Email, "Your OTP for Password Reset", $"Your OTP is {otp}. It is valid for 10 minutes.");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Error sending OTP: " + ex.Message);
+                return View("VerifyEmail", model);
+            }
+
+            return RedirectToAction("VerifyOTP");
+        }
+
+        public IActionResult VerifyOTP()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult VerifyOTP(string OTP)
+        {
+            var storedOtp = TempData["OTP"]?.ToString();
+            var email = TempData["Email"]?.ToString();
+
+            if (string.IsNullOrEmpty(OTP))
+            {
+                ModelState.AddModelError("", "OTP is required.");
+            }
+            else if (storedOtp == null || storedOtp != OTP)
+            {
+                ModelState.AddModelError("", "Invalid or expired OTP.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(); // Return to the view with error messages
+            }
+
+            TempData["VerifiedEmail"] = email;
+            return RedirectToAction("ResetPassword");
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> Logout()
+        public IActionResult ResetPassword()
         {
-            await _signInManager.SignOutAsync();
-            Response.Cookies.Delete("JwtToken");
-
-            // Clear all cookies if needed (optional)
-            foreach (var cookie in Request.Cookies.Keys)
+            var email = TempData["VerifiedEmail"]?.ToString();
+            if (email == null)
             {
-                Response.Cookies.Delete(cookie);
+                return RedirectToAction("VerifyEmail");
+            }
+
+            return View(new ResetPasswordViewModel { Email = email });
+        }
+
+        [HttpPost]
+        public IActionResult ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model); // Return to the view with error messages
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "User not found.");
+                return View(model);
+            }
+
+            // Hash the new password and update
+            user.PasswordHash = _passwordHasher.HashPassword(user, model.NewPassword);
+            user.UpdatedOn = DateTime.Now;
+
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Error updating password: " + ex.Message);
+                return View(model);
             }
 
             return RedirectToAction("Login");
+        }
+
+
+        private void SendEmail(string toEmail, string subject, string body)
+        {
+            var fromAddress = new MailAddress("havendesign3@gmail.com", "BlogAdmin Support");
+            var toAddress = new MailAddress(toEmail);
+            const string fromPassword = "tleawsujnotrruzv";
+
+            var smtp = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
+            };
+
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body
+            })
+            {
+                smtp.Send(message);
+            }
         }
 
     }

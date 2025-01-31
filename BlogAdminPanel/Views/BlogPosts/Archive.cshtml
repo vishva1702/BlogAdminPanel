@@ -1,0 +1,118 @@
+﻿@using BlogAdminPanel.Models.BlogAdminPanel.Models
+@model IEnumerable<BlogPost>
+@{
+    ViewBag.Title = "Archived Blog Posts";
+}
+
+
+
+
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+    </div><!-- End Page Title -->
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Archived Post</h5>
+
+
+
+                <!-- Archived Posts Section -->
+                @if (Model != null && Model.Any())
+                {
+                    <table id="archivedTable" class="table datatable table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Category</th>
+                                <th>Tags</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var post in Model.Where(bp => bp.Status == "Archived"))
+                            {
+                                <tr>
+                                    <td>@post.Id</td>
+                                    <td>@post.Title</td>
+                                    <td>@post.Status</td>
+                                    <td>@post.Category?.Name</td>
+                                    <td>@post.Tag?.Name</td>
+                                    <td>
+                                        <form asp-action="UnArchiveConfirmed" asp-route-id="@post.Id" method="post" style="display:inline-block;">
+                                            <button type="submit" style="border-width:2px;font-weight:600;" class="btn btn-outline-warning btn-sm">UnArchive</button>
+                                        </form>
+                                        <button class="btn btn-outline-danger btn-sm" style="border-width:2px;font-weight:600;" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                data-id="@post.Id" data-name="@post.Title">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-center">No archived posts found.</p>
+                }
+
+                <!-- Delete Confirmation Modal -->
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete the blog post <strong id="deletePostName"></strong>?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <form id="deleteForm" asp-controller="BlogPosts" asp-action="Delete" method="post" style="display: inline;">
+                                    <input type="hidden" id="deletePostId" name="id" />
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+
+
+
+    <script>
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const postId = button.getAttribute('data-id');
+            const postName = button.getAttribute('data-name');
+
+            // Set the post name in the modal
+            const deletePostName = document.getElementById('deletePostName');
+            deletePostName.textContent = postName;
+
+            // Set the post ID in the hidden input
+            const deletePostId = document.getElementById('deletePostId');
+            deletePostId.value = postId;
+
+            // Update the form action dynamically
+            const deleteForm = document.getElementById('deleteForm');
+            deleteForm.action = /BlogPosts/Delete/${postId};
+        });
+    </script>
+
+
+
+</main><!-- End #main -->

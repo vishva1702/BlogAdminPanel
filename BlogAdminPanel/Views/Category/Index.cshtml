@@ -1,0 +1,88 @@
+﻿@model IEnumerable<BlogAdminPanel.Models.Category>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+    </div>
+
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title ">Category Details</h5>
+
+                <table id="categoryTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Category Name</th>
+                            <th>Number of Blog Posts</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Name</td>
+                                <td>@item.BlogPosts?.Count</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm" style="border-width:2px;font-weight:600;">Edit</a>
+                                    <button class="btn btn-outline-danger btn-sm" style="border-width:2px;font-weight:600;" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                            data-id="@item.Id" data-name="@item.Name">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete <strong id="deleteCategoryName"></strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" asp-controller="Category" asp-action="Delete" method="post">
+                        <input type="hidden" id="deleteCategoryId" name="id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        new simpleDatatables.DataTable("#categoryTable", { searchable: true, perPage: 5 });
+
+        document.querySelector("#deleteModal").addEventListener("show.bs.modal", function (event) {
+            let button = event.relatedTarget;
+            document.getElementById("deleteCategoryName").textContent = button.getAttribute("data-name");
+            document.getElementById("deleteCategoryId").value = button.getAttribute("data-id");
+        });
+    });
+    const deleteModal = document.getElementById('deleteModal');
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const categoryId = button.getAttribute('data-id');
+        const categoryName = button.getAttribute('data-name');
+        document.getElementById('deleteCategoryName').textContent = categoryName;
+        document.getElementById('deleteCategoryId').value = categoryId;
+    });
+</script>

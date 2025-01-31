@@ -1,0 +1,38 @@
+﻿@model BlogAdminPanel.Models.DTOs.TagCreateDto
+@{
+    ViewData["Title"] = "Create";
+}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+    </div>
+    <div class="col-lg-6 mt-4">
+        <div class="card border-secondary">
+            <div class="card-header bg-light text-dark">
+                <h5 class="card-title mb-0">Tag Details</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post" class="row g-3 needs-validation" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input asp-for="Name" class="form-control" id="floatingName" placeholder="Tag Name" required />
+                            <label for="floatingName">Tag Name</label>
+                            <div class="invalid-feedback">
+                                Please provide a valid category name.
+                            </div>
+                        </div>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Create Tag</button>
+                        <button type="reset" class="btn btn-secondary">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>

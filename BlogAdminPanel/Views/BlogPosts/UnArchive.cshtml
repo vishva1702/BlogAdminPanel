@@ -1,0 +1,210 @@
+﻿@model BlogAdminPanel.Models.DTOs.BlogPostCreateDto
+
+@{
+    ViewData["Title"] = "Create Blog Post";
+}
+
+<head>
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="~/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="~/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="~/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="~/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="~/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="~/assets/css/style.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(to bottom, #f8f9fa, #e3f2fd);
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .btn {
+            margin-top: 10px;
+        }
+
+        /* Loading Spinner */
+        #loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        /* Quill Editor Styling */
+        .ql-container {
+            min-height: 200px;
+        }
+    </style>
+</head>
+
+<h1 class="mb-4">Create Blog Post</h1>
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+</div>
+
+<!-- Loading Spinner -->
+<div id="loading">
+    <img src="~/assets/img/loader.gif" alt="Loading..." />
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Create Blog Post</h5>
+
+        <!-- Blog Post Form -->
+        <div class="quill-editor-default">
+            <div class="card border-secondary mt-4">
+                <div class="card-header bg-light text-dark">
+                    <h5 class="card-title mb-0">Blog Post Details</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data" id="createBlogPostForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <!-- Meta Title -->
+                        <div class="form-group">
+                            <label for="MetaTitle">Meta Title</label>
+                            <input asp-for="MetaTitle" class="form-control" placeholder="Enter Meta Title" type="text" id="MetaTitle" required />
+                            <span asp-validation-for="MetaTitle" class="text-danger"></span>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="form-group">
+                            <label for="Content">Content</label>
+                            <div id="quill-editor" class="quill-editor"></div>
+                            <textarea asp-for="Content" class="form-control d-none" id="Content" required></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+
+                        <!-- Meta Description -->
+                        <div class="form-group">
+                            <label for="MetaDescription">Meta Description</label>
+                            <textarea asp-for="MetaDescription" class="form-control" placeholder="Enter Meta Description" id="MetaDescription" required></textarea>
+                            <span asp-validation-for="MetaDescription" class="text-danger"></span>
+                        </div>
+
+                        <!-- Keywords -->
+                        <div class="form-group">
+                            <label for="Keywords">Keywords</label>
+                            <input asp-for="Keywords" class="form-control" placeholder="Enter Keywords (comma-separated)" type="text" id="Keywords" required />
+                            <span asp-validation-for="Keywords" class="text-danger"></span>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="form-group">
+                            <label for="Status">Status</label>
+                            <select asp-for="Status" asp-items="ViewBag.StatusOptions" class="form-control" id="statusDropdown" required>
+                                <option value="">-- Select Status --</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+
+                        <!-- Publish Date (conditionally visible) -->
+                        <div class="form-group" id="publishDateGroup" style="display: none;">
+                            <label for="PublishDate">Publish Date</label>
+                            <input asp-for="PublishDate" type="datetime-local" class="form-control" id="PublishDate" />
+                            <span asp-validation-for="PublishDate" class="text-danger"></span>
+                        </div>
+
+                        <!-- Image Upload -->
+                        <div class="form-group">
+                            <label for="ImageFile">Upload Image</label>
+                            <input asp-for="ImageFile" type="file" class="form-control" id="ImageFile" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="form-group">
+                            <label for="CategoryId">Category</label>
+                            <select asp-for="CategoryId" asp-items="ViewBag.CategoryOptions" class="form-control" id="CategoryId" required>
+                                <option value="">-- Select Category --</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Tag -->
+                        <div class="form-group">
+                            <label for="TagId">Tag</label>
+                            <select asp-for="TagId" asp-items="ViewBag.TagOptions" class="form-control" id="TagId" required>
+                                <option value="">-- Select Tag --</option>
+                            </select>
+                            <span asp-validation-for="TagId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-success">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- End Blog Post Form -->
+
+    </div>
+</div>
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+
+<!-- Include Quill JS -->
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+@section Scripts {
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const quill = new Quill('#quill-editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{ 'font': [] }],
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        [{ 'indent': '-1' }, { 'indent': '+1' }],
+                        ['link', 'image', 'video'],
+                        ['clean']
+                    ]
+                }
+            });
+
+            // Sync Quill content with textarea
+            document.getElementById("createBlogPostForm").addEventListener("submit", function () {
+                document.getElementById("Content").value = quill.root.innerHTML;
+            });
+
+            // Status Dropdown Logic
+            document.getElementById("statusDropdown").addEventListener("change", function () {
+                const publishDateGroup = document.getElementById("publishDateGroup");
+                if (this.value === "Published") {
+                    publishDateGroup.style.display = "block";
+                } else {
+                    publishDateGroup.style.display = "none";
+                    document.querySelector('[name="PublishDate"]').value = "";
+                }
+            });
+
+            // Trigger the change event on page load to set the correct initial state
+            document.getElementById("statusDropdown").dispatchEvent(new Event("change"));
+        });
+    </script>
+
+    @Html.Partial("_ValidationScriptsPartial")
+}

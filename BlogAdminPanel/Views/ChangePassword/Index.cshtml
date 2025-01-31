@@ -1,0 +1,73 @@
+﻿@model BlogAdminPanel.ViewModels.ChangePasswordViewModel
+
+<main id="main" class="main">
+    <div class="col-lg-6 mt-4">
+        <div class="card border-secondary">
+            <div class="card-header bg-light text-dark">
+                <h5 class="card-title mb-0">Change Password</h5>
+            </div>
+            <div class="card-body">
+                <!-- Display Success or Error Messages -->
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger mb-3">
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success mb-3">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+
+                <!-- Form Starts -->
+                <form asp-action="ChangePassword" method="post" class="row g-3 needs-validation" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <!-- Current Password -->
+                    <div class="col-12">
+                        <div class="form-floating">
+                            @Html.PasswordFor(m => m.CurrentPassword, new { @class = "form-control", id = "floatingCurrentPassword", placeholder = "Enter current password", required = "required" })
+                            <label for="floatingCurrentPassword">Current Password</label>
+                            <div class="invalid-feedback">
+                                Please enter your current password.
+                            </div>
+                        </div>
+                        <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+                    </div>
+
+                    <!-- New Password -->
+                    <div class="col-12">
+                        <div class="form-floating">
+                            @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control", id = "floatingNewPassword", placeholder = "Enter new password", required = "required" })
+                            <label for="floatingNewPassword">New Password</label>
+                            <div class="invalid-feedback">
+                                Please enter a new password.
+                            </div>
+                        </div>
+                        <span asp-validation-for="NewPassword" class="text-danger"></span>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="col-12">
+                        <div class="form-floating">
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", id = "floatingConfirmPassword", placeholder = "Confirm new password", required = "required" })
+                            <label for="floatingConfirmPassword">Confirm Password</label>
+                            <div class="invalid-feedback">
+                                Please confirm your new password.
+                            </div>
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary">Reset Password</button>
+                        <button type="reset" class="btn btn-secondary">Clear</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>

@@ -1,0 +1,107 @@
+﻿@model BlogAdminPanel.Models.DTOs.UserCreateDto
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+    </div><!-- End Page Title -->
+
+    <div class="col-lg-6 mt-4">
+        <div class="card border-secondary">
+            <div class="card-header bg-light text-dark">
+                <h5 class="card-title mb-0">User Details</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data" class="row g-3 needs-validation" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!-- Floating Labels Form -->
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input asp-for="UserName" class="form-control" id="floatingName" placeholder="Your Name" required />
+                            <label for="floatingName">Username</label>
+                            <div class="invalid-feedback">
+                                Please provide a valid username.
+                            </div>
+                        </div>
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input asp-for="Email" class="form-control" id="floatingEmail" placeholder="Your Email" required />
+                            <label for="floatingEmail">Email</label>
+                            <div class="invalid-feedback">
+                                Please provide a valid email address.
+                            </div>
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input asp-for="PasswordHash" class="form-control" id="floatingPassword" type="password" placeholder="Password" required />
+                            <label for="floatingPassword">Password</label>
+                            <div class="invalid-feedback">
+                                Please provide a valid password.
+                            </div>
+                        </div>
+                        <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <select asp-for="Role" class="form-select" id="floatingSelect" required>
+                                <option value="" disabled selected>Choose a role</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Editor">Editor</option>
+                            </select>
+                            <label for="floatingSelect">Role</label>
+                            <div class="invalid-feedback">
+                                Please select a role.
+                            </div>
+                        </div>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input asp-for="IsActive" class="form-check-input" type="checkbox" id="floatingIsActive" />
+                            <label for="floatingIsActive" class="form-check-label">Is Active</label>
+                            <div class="invalid-feedback">
+                                You must agree before submitting.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input asp-for="Image" class="form-control" id="floatingImage" type="file" accept="image/*" />
+                            <label for="floatingImage">Upload Image</label>
+                            <div class="invalid-feedback">
+                                Please upload a valid image.
+                            </div>
+                        </div>
+                        <span asp-validation-for="Image" class="text-danger"></span>
+                    </div>
+
+
+                    <!-- Buttons -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Create User</button>
+                        <button type="reset" class="btn btn-secondary">Reset</button>
+                    </div>
+                </form><!-- End Floating Labels Form -->
+            </div>
+        </div>
+    </div>
+
+
+</main><!-- End #main -->
+
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>

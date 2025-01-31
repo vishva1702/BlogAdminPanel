@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>404 - Page Not Found</title>
+    <meta content="404 error page for the NiceAdmin template. The requested page could not be found." name="description">
+    <meta content="404, error, page not found" name="keywords">
+
+    <!-- Favicons -->
+    <link href="@Url.Content("~/assets/img/favicon.png")" rel="icon">
+    <link href="@Url.Content("~/assets/img/apple-touch-icon.png")" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="@Url.Content("~/assets/vendor/bootstrap/css/bootstrap.min.css")" rel="stylesheet">
+    <link href="@Url.Content("~/assets/vendor/bootstrap-icons/bootstrap-icons.css")" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="@Url.Content("~/assets/css/style.css")" rel="stylesheet">
+</head>
+
+<body>
+    <main id="main" class="main">
+
+        <div class="pagetitle">
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <section class="section error-404 d-flex flex-column align-items-center justify-content-center">
+                        <h1 class="display-1">404</h1>
+                        <h2 class="fs-4 text-center">The page you are looking for doesn't exist.</h2>
+                        <a class="btn btn-primary" href="@Url.Action("Index", "Home")">Back to home</a>
+                        <img src="@Url.Content("~/assets/img/not-found.svg")" class="img-fluid py-5" alt="Page Not Found">
+                        <div class="credits">
+                            Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center">
+        <i class="bi bi-arrow-up-short"></i>
+    </a>
+
+    <!-- Vendor JS Files -->
+    <script src="@Url.Content("~/assets/vendor/bootstrap/js/bootstrap.bundle.min.js")"></script>
+    <script src="@Url.Content("~/assets/js/main.js")"></script>
+
+</body>
+
+</html>
